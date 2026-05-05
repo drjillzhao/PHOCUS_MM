@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultra-low Energy Social Housing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #2c3e50;
+            line-height: 1.6;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        header {
+            text-align: center;
+            padding: 50px 40px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+        }
+
+        .subheading {
+            font-size: 1.1rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .content-card {
+            padding: 2.5rem 2.5rem 3rem;
+        }
+
+        .funding-note {
+            font-weight: 600;
+            color: #667eea;
+            border-left: 4px solid #667eea;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.75rem;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+
+        p {
+            font-size: 1.05rem;
+            margin-bottom: 1.25rem;
+            color: #2c3e50;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 2.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.875rem 2.5rem;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(118, 75, 162, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(118, 75, 162, 0.5);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.75rem; }
+            .content-card { padding: 1.5rem; }
+            header { padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <header>
+            <h1>Ultra-low Energy Social Housing Delivery Toolkit</h1>
+            <div class="subheading">Maturity Self Assessment Toolkit and Action Plan for Social Housing Providers</div>
+        </header>
+
+        <div class="content-card">
+            <p class="funding-note">
+                This tool is co-developed by a community of practice, funded by the University of the West of England. Created by Jill Zhao.
+            </p>
+
+            <p>
+                This tool will help identify where you are on your journey to build more healthy and low-energy houses, and give you a range of steps to help you progress.
+            </p>
+
+            <p>
+                This tool is to be used by a <strong>housing development officer</strong> or someone with the equivalent knowledge and experience within a registered social housing provider organisation.
+            </p>
+
+            <div class="btn-container">
+                <a href="PHOCUS.html" class="btn">How to use this tool</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Community of Practice | University of the West of England | Developed by Dr Ryan Fellows</p>
+    </footer>
+
+</body>
+</html>

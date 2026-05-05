@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHOCUS Action Plan</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #2c3e50;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 1.5rem 1rem;
+    }
+
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 2rem;
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Nav ── */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      cursor: pointer;
+      border: none;
+    }
+    .nav-button.secondary { background: #f8f9fa; color: #495057; border: 2px solid #dee2e6; }
+    .nav-button.secondary:hover { background: #e9ecef; transform: translateX(-3px); }
+    .nav-button.primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    .nav-button.primary:hover { transform: scale(1.03); box-shadow: 0 6px 16px rgba(102,126,234,0.4); }
+    .nav-button.print-btn { background: #f8f9fa; color: #495057; border: 2px solid #dee2e6; }
+    .nav-button.print-btn:hover { background: #e9ecef; }
+
+    /* ── Headings ── */
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+    .page-subtitle { font-size: 1rem; color: #6c757d; margin-bottom: 0.5rem; }
+
+    /* ── No-data ── */
+    .no-data {
+      text-align: center;
+      padding: 3rem;
+      background: #f8f9fa;
+      border-radius: 12px;
+      color: #6c757d;
+    }
+    .no-data a { color: #667eea; font-weight: 600; text-decoration: none; }
+
+    /* ── Summary banner ── */
+    .summary-banner {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0 2rem;
+    }
+    .sum-card { padding: 1.25rem 1.5rem; border-radius: 12px; text-align: center; }
+    .sum-card.total { background: linear-gradient(135deg,rgba(102,126,234,0.08),rgba(118,75,162,0.08)); border: 2px solid #667eea; }
+    .sum-card.gaps  { background: linear-gradient(135deg,rgba(253,126,20,0.08),rgba(220,90,0,0.08));   border: 2px solid #fd7e14; }
+    .sum-card.top   { background: linear-gradient(135deg,rgba(40,167,69,0.08),rgba(21,87,36,0.08));    border: 2px solid #28a745; }
+    .sum-card h3    { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; color: #6c757d; margin-bottom: 0.4rem; }
+    .sum-card .big  { font-size: 2.4rem; font-weight: 800; line-height: 1; }
+    .sum-card.total .big { color: #667eea; }
+    .sum-card.gaps  .big { color: #fd7e14; }
+    .sum-card.top   .big { color: #28a745; }
+    .sum-card .sub  { font-size: 0.8rem; color: #6c757d; margin-top: 0.2rem; }
+
+    /* ── Section block ── */
+    .section-block { margin-bottom: 2rem; }
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #667eea;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .section-title .section-icon { font-size: 1.1rem; }
+
+    /* ── Cards grid — 2 per row ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
+      gap: 1rem;
+    }
+
+    /* ── Flip card outer ── */
+    .flip-card-outer {
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+      border: 1px solid #e9ecef;
+      overflow: hidden;
+      animation: cardIn 0.4s ease both;
+      display: flex;
+      flex-direction: column;
+    }
+    @keyframes cardIn {
+      from { opacity:0; transform: translateY(12px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* ── Card header ── */
+    .card-header {
+      padding: 0.875rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-shrink: 0;
+    }
+    .card-header-left { flex: 1; }
+    .card-q-label { font-size: 0.9rem; font-weight: 700; color: white; line-height: 1.3; }
+    .card-movement { font-size: 0.72rem; color: rgba(255,255,255,0.8); margin-top: 0.2rem; }
+    .level-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      font-weight: 800;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.4);
+      flex-shrink: 0;
+    }
+    .card-header.to-2 { background: linear-gradient(135deg,#3498db,#2980b9); }
+    .card-header.to-3 { background: linear-gradient(135deg,#27ae60,#219a52); }
+    .card-header.to-4 { background: linear-gradient(135deg,#e67e22,#d35400); }
+    .card-header.to-5 { background: linear-gradient(135deg,#8e44ad,#6c3483); }
+    .card-header.top  { background: linear-gradient(135deg,#155724,#0d3b17); }
+
+    /* ── Progress bar ── */
+    .progress-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.25rem 0.5rem;
+      background: white;
+      flex-shrink: 0;
+    }
+    .progress-track { flex: 1; height: 6px; background: #e9ecef; border-radius: 99px; overflow: hidden; }
+    .progress-fill  { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+    .progress-label { font-size: 0.72rem; font-weight: 600; color: #6c757d; white-space: nowrap; }
+
+    /* ── Slide viewport (clips overflow) ── */
+    .slides-viewport {
+      background: white;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    /* ── Slide strip (horizontal list of all steps) ── */
+    .slides-strip {
+      display: flex;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+
+    /* ── Individual slide ── */
+    .advice-slide {
+      flex: 0 0 100%;
+      padding: 0.75rem 1.25rem 0.5rem;
+      min-height: 120px;
+    }
+
+    .step-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.35rem;
+    }
+    .card-advice {
+      font-size: 0.845rem;
+      color: #343a40;
+      line-height: 1.7;
+    }
+
+    /* ── Slide nav row ── */
+    .slide-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.4rem 1rem 0.75rem;
+      background: white;
+      flex-shrink: 0;
+    }
+    .slide-dots { display: flex; gap: 5px; align-items: center; }
+    .slide-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #dee2e6;
+      transition: background 0.25s, transform 0.25s;
+    }
+    .slide-dot.active { background: #667eea; transform: scale(1.35); }
+
+    .arrow-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid #dee2e6;
+      background: white;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: #495057;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .arrow-btn:hover:not(:disabled) { border-color: #667eea; color: #667eea; background: rgba(102,126,234,0.06); }
+    .arrow-btn:disabled { opacity: 0.22; cursor: default; }
+
+    /* ── Step counter ── */
+    .step-counter { font-size: 0.72rem; color: #6c757d; font-weight: 600; }
+
+    /* ── Top card ── */
+    .is-top-body {
+      padding: 0.85rem 1.25rem 1.1rem;
+      background: linear-gradient(135deg,rgba(21,87,36,0.04),rgba(40,167,69,0.04));
+      flex: 1;
+    }
+    .top-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #155724;
+      background: rgba(40,167,69,0.12);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ── Print: show all slides stacked ── */
+    @media print {
+      body { background: white !important; padding: 0; }
+      .hero { box-shadow: none !important; border-radius: 0 !important; padding: 1rem; }
+      .nav-buttons, .no-print { display: none !important; }
+      .flip-card-outer { break-inside: avoid; }
+      .cards-grid { grid-template-columns: 1fr 1fr; }
+      .slides-viewport { overflow: visible; }
+      .slides-strip { flex-direction: column; transform: none !important; }
+      .advice-slide { flex: none; border-top: 1px solid #f0f0f0; }
+      .slide-nav { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .summary-banner { grid-template-columns: 1fr; }
+      .nav-buttons { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<main class="hero">
+
+  <div class="nav-buttons no-print">
+    <a href="results.html" class="nav-button secondary">← Back to Results</a>
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+      <button onclick="window.print()" class="nav-button print-btn">🖨 Print / Save PDF</button>
+    </div>
+  </div>
+
+  <h1>PHOCUS Action Plan</h1>
+  <p class="page-subtitle">Your personalised next steps — based on your <em>Now</em> and <em>Future</em> scores</p>
+
+  <div id="no-data" class="no-data" style="display:none">
+    <p style="font-size:1.3rem;margin-bottom:0.5rem">📋 No assessment data found</p>
+    <p>Please complete the assessment before viewing your action plan.</p>
+    <p style="margin-top:1rem"><a href="policy-and-funding-final.html">Start the assessment →</a></p>
+  </div>
+
+  <div id="plan-content" style="display:none">
+    <div class="summary-banner">
+      <div class="sum-card total">
+        <h3>Areas Assessed</h3>
+        <div class="big" id="sum-total">—</div>
+        <div class="sub">questions answered</div>
+      </div>
+      <div class="sum-card gaps">
+        <h3>Areas with Next Steps</h3>
+        <div class="big" id="sum-gaps">—</div>
+        <div class="sub">areas to develop</div>
+      </div>
+      <div class="sum-card top">
+        <h3>At Target Level</h3>
+        <div class="big" id="sum-top">—</div>
+        <div class="sub">targets already reached</div>
+      </div>
+    </div>
+
+    <div id="plan-sections"></div>
+  </div>
+
+</main>
+
+<script>
+const QUESTIONS = [
+  { page:1, q:1, section:'Policy & Funding',          label:'Policy Framework',        sectionIcon:'🏛️' },
+  { page:1, q:2, section:'Policy & Funding',          label:'Funding',                 sectionIcon:'🏛️' },
+  { page:2, q:1, section:'Overarching Strategies',    label:'Delivery Strategy',       sectionIcon:'🗂️' },
+  { page:2, q:2, section:'Overarching Strategies',    label:'Quality Assurance',       sectionIcon:'🗂️' },
+  { page:2, q:3, section:'Overarching Strategies',    label:'Procurement Strategy',    sectionIcon:'🗂️' },
+  { page:3, q:1, section:'Organisational Capability', label:'Leadership & Governance', sectionIcon:'👥' },
+  { page:3, q:2, section:'Organisational Capability', label:'Training & Skills',       sectionIcon:'👥' },
+  { page:3, q:3, section:'Organisational Capability', label:'Culture',                 sectionIcon:'👥' },
+  { page:3, q:4, section:'Organisational Capability', label:'Cost-Benefit Analysis',   sectionIcon:'👥' },
+  { page:3, q:5, section:'Organisational Capability', label:'Stakeholder Engagement',  sectionIcon:'👥' },
+  { page:4, q:1, section:'Process Maturity',          label:'Process Documentation',   sectionIcon:'⚙️' },
+  { page:4, q:2, section:'Process Maturity',          label:'Project Management',      sectionIcon:'⚙️' },
+  { page:4, q:3, section:'Process Maturity',          label:'Risk Management',         sectionIcon:'⚙️' },
+  { page:4, q:4, section:'Process Maturity',          label:'Post-Occupancy',          sectionIcon:'⚙️' },
+  { page:4, q:5, section:'Process Maturity',          label:'Monitoring',              sectionIcon:'⚙️' },
+  { page:5, q:1, section:'Supply Chain Readiness',    label:'Supply Chain Engagement', sectionIcon:'🔗' },
+  { page:5, q:2, section:'Supply Chain Readiness',    label:'Supplier Capability',     sectionIcon:'🔗' },
+  { page:5, q:3, section:'Supply Chain Readiness',    label:'Supplier Innovation',     sectionIcon:'🔗' },
+  { page:6, q:1, section:'Integration & Scalability', label:'Procurement Alignment',   sectionIcon:'🚀' },
+  { page:6, q:2, section:'Integration & Scalability', label:'Scalability',             sectionIcon:'🚀' },
+];
+
+const LEVELS = ['Observer','Early Adopter','Effective Deliverer','Leader','Innovator'];
+
+const STEP_COLOURS = { 2:'#3498db', 3:'#27ae60', 4:'#e67e22', 5:'#8e44ad' };
+
+const ADVICE = {
+  'Policy Framework': [
+    'Use lessons learned from pilot projects to formalise internal PH/ULE commitments. Develop or update corporate housing or sustainability policies to include explicit PH/ULE targets. Secure leadership endorsement and allocate budget and resources for implementation. Integrate PH/ULE goals into procurement and design guidance.',
+    'Strengthen policy by setting measurable internal performance standards that exceed regulations. Establish regular reporting on PH/ULE outcomes. Actively engage with peer organisations, local authorities, and funders to influence wider adoption. Publish success stories and performance data to demonstrate value.',
+    'Lead sector-wide policy advocacy by working with government bodies, funders and peers to embed PH/ULE into national frameworks. Share your evidence and data openly to influence regional and national housing standards. Mentor other organisations on policy development.',
+    'Expand influence beyond organisational boundaries by contributing to regional or national policy development. Co-create or sponsor sector-wide frameworks and guidance. Embed PH/ULE standards as mandatory in all organisational programmes. Use evidence from long-term monitoring to shape government or funder incentives and regulatory reforms.',
+  ],
+  'Funding': [
+    'Develop a structured funding strategy and business model outlining short- and long-term investment needs. Prepare successful bids or partnerships to secure initial non-standard funding. Integrate lifecycle costing and value-based arguments (e.g., long-term savings, social and health co-benefits) into proposals.',
+    'Establish ongoing relationships with diverse funders (public, private, philanthropic). Demonstrate successful delivery and return on investment from previous PH/ULE projects. Use published case studies to strengthen the business case and attract repeat or larger-scale investment.',
+    'Engage with funders and policymakers to shape future funding mechanisms and criteria for PH/ULE housing. Advocate for sector-wide reform by sharing evidence of performance, value, and impact. Co-develop or pilot new funding models (e.g., outcome-based finance, blended investment) that enable large-scale PH/ULE delivery.',
+    'Lead sector-wide innovation in funding by co-creating new financing mechanisms with funders and policymakers. Develop and share replicable funding models. Use your track record and data to influence national policy on PH/ULE investment and drive regulatory reform.',
+  ],
+  'Delivery Strategy': [
+    'Formalise the delivery strategy, outlining clear roles, responsibilities, and workflows across design, procurement, and construction. Integrate PH/ULE delivery steps into organisational procedures and establish repeatable processes. Pilot the strategy on one or more projects.',
+    'Embed the delivery strategy across all housing programmes and ensure it is regularly reviewed and improved based on project feedback. Build partnerships with designers, contractors, and consultants to support consistent PH/ULE delivery. Introduce performance tracking and evaluation mechanisms.',
+    'Use delivery data and lessons learned to contribute to sector-wide best practice. Lead or contribute to industry networks to share insights and co-develop new approaches. Advocate for improved delivery standards across the wider housing sector.',
+    'Use delivery data and lessons learned to refine strategy and inform sector-wide best practice. Adapt strategy to emerging technologies, regulations, and funding models to stay at the forefront of PH/ULE delivery.',
+  ],
+  'Quality Assurance': [
+    'Develop a structured QA framework aligned with PH/ULE standards (e.g., airtightness testing, thermal bridge checks, documentation for certification). Ensure QA processes are applied consistently across projects and used to inform improvements.',
+    'Embed QA processes across all programmes with clear reporting, audit, and feedback mechanisms. Use performance data (e.g., energy performance, defect rates) to drive continuous improvement and corrective actions. Engage independent verifiers or auditors for objective review.',
+    'Advance towards predictive and data-driven QA, integrating real-time monitoring and benchmarking against industry best practice. Pursue third-party certifications (e.g., Passivhaus, AECB) as standard practice. Share QA insights across the sector.',
+    'Advance QA to the highest level by integrating real-time monitoring and predictive analysis. Pursue and hold third-party certifications as standard. Share QA insights to raise standards and influence national guidance and regulatory frameworks.',
+  ],
+  'Procurement Strategy': [
+    'Develop a formal procurement strategy that aligns with organisational sustainability and policy goals. Introduce weighted criteria for energy, quality, and lifecycle performance alongside cost. Ensure procurement teams are trained on PH/ULE requirements and evaluation methods.',
+    'Embed strategic procurement practices across all programmes through frameworks and long-term partnerships with capable suppliers. Establish feedback loops to review supplier performance and continuously improve alignment with PH/ULE objectives.',
+    'Innovate procurement models (e.g., outcome-based contracts, alliances, integrated delivery models) that incentivise PH/ULE excellence. Collaborate with other clients and funders to influence wider procurement standards, sharing best practice and driving sector transformation.',
+    'Lead sector-wide procurement transformation. Co-develop innovative models with peers, funders and government. Publish case studies and influence policy to embed PH/ULE-aligned procurement as the standard across the housing sector.',
+  ],
+  'Leadership & Governance': [
+    'Form a dedicated PH/ULE team. Define roles and responsibilities. Secure leadership endorsement and resources. Create a governance framework and roadmap for delivery.',
+    'Expand the team with specialist skills. Embed governance in the organisational structure. Prioritise training and development. Set performance metrics and establish monitoring mechanisms.',
+    'Integrate PH/ULE into corporate strategy. Influence external policy and join forums. Share best practice and innovation. Invest in R&D and continuous improvement.',
+    'Integrate PH/ULE into corporate strategy at the highest level. Influence external policy through national forums. Actively share best practice and innovation. Lead sector-wide R&D and continuous improvement initiatives.',
+  ],
+  'Training & Skills': [
+    'Develop structured training programmes aligned with PH/ULE delivery. Allocate budget and time for staff participation. Assess skills gaps regularly. Integrate training into workforce development plans.',
+    'Expand training scope to advanced PH/ULE competencies. Invest in leadership development for PH/ULE delivery. Collaborate with external partners for tailored training. Embed a continuous learning culture across the organisation.',
+    'Co-develop sector-leading training programmes with partners (e.g., PHT, AECB). Share expertise and resources across the sector. Position the organisation as a leader in PH/ULE skills development. Invest in innovation and R&D for future training needs.',
+    'Co-develop sector-leading training programmes with partners. Share expertise and resources across the sector. Position the organisation as the definitive national leader in PH/ULE skills development and shape future training standards.',
+  ],
+  'Culture': [
+    'Integrate sustainability thinking into KPIs and staff behaviours. Formalise participation in sector networks. Begin tracking sustainability-related performance indicators across the organisation.',
+    'Embed sustainability culture into behaviour frameworks. Develop strategic partnerships for knowledge sharing. Use benchmarking to drive collective progress across programmes.',
+    'Lead collaborative initiatives across councils and housing providers. Share benchmarking data and establish sector-wide best practice. Drive demand for sustainable practices through advocacy and collaboration.',
+    'Lead collaborative initiatives nationally. Share benchmarking data and establish sector-wide best practice. Drive demand for sustainable practices through national advocacy and collaboration at the highest level.',
+  ],
+  'Cost-Benefit Analysis': [
+    'Implement structured financial analysis processes. Include lifecycle costing in project evaluations and consider social value, health and environmental assessment. Begin linking analysis to strategic investment decisions.',
+    'Embed long-term cost-benefit modelling (30–40 years) into planning. Use cost-benefit analysis to inform funding and delivery strategies. Develop internal capability for scenario modelling. Integrate financial analysis into governance and reporting.',
+    'Lead innovation in cost-benefit modelling for PH/ULE projects. Develop sector-wide cost-benefit benchmarking standards. Share best practice and modelling tools with peers.',
+    'Lead innovation in cost-benefit modelling for PH/ULE projects nationally. Develop sector-wide cost-benefit benchmarking standards. Demonstrate long-term viability and sector-wide value through robust analysis and national advocacy.',
+  ],
+  'Stakeholder Engagement': [
+    'Formalise stakeholder engagement processes. Schedule regular meetings and updates across programmes. Secure strategic and operational backing for PH/ULE delivery.',
+    'Build strong partnerships and co-ownership of delivery. Involve stakeholders in planning and implementation. Develop joint accountability frameworks.',
+    'Co-create PH/ULE strategies with stakeholders. Establish alliances to influence sector-wide adoption and policy. Share best practices and collaborate on advocacy initiatives.',
+    'Co-create PH/ULE strategies with stakeholders at a national level. Establish alliances to influence sector-wide adoption. Collaborate on advocacy initiatives with government and funders.',
+  ],
+  'Process Documentation': [
+    'Develop standardised processes for key phases (design, procurement, construction, commissioning). Embed PH/ULE principles into these processes. Train staff on new documentation and ensure consistent application.',
+    'Align processes with recognised frameworks (e.g., RIBA overlay). Embed governance for process compliance. Monitor and audit application across projects.',
+    'Continuously optimise processes based on lessons learned. Share PH/ULE-specific documentation and best practices across the sector. Lead benchmarking initiatives to set industry standards.',
+    'Continuously optimise processes and lead benchmarking initiatives. Publish your PH/ULE process documentation as sector best practice. Influence national industry standards through your documented evidence.',
+  ],
+  'Project Management': [
+    'Implement structured project management processes with defined TCS controls. Integrate PH/ULE requirements into contracts and procurement documents. Use simple tools for scheduling and cost monitoring. Establish reporting mechanisms for project performance.',
+    'Strengthen governance and accountability for TCS management. Adopt advanced project management tools for forecasting and risk control. Ensure transparent contracts with clear PH/ULE deliverables. Conduct regular audits and lessons-learned reviews.',
+    'Deploy predictive TCS systems and data-driven decision-making. Lead sector-wide best practice sharing for PH/ULE project management. Innovate agile delivery models tailored to PH/ULE requirements.',
+    'Deploy predictive TCS systems and data-driven decision-making. Lead sector-wide best practice sharing. Innovate agile delivery models tailored to PH/ULE requirements and benchmark performance to influence industry standards at a national level.',
+  ],
+  'Risk Management': [
+    'Establish a formal risk register for PH/ULE projects. Define acceptable risk thresholds and mitigation strategies. Train staff on risk identification and monitoring. Integrate risk management into project planning.',
+    'Adopt proactive risk identification processes. Implement structured mitigation strategies aligned with project goals. Use scenario planning for high-impact risks. Regularly review and update risk management frameworks.',
+    'Apply innovative approaches to balancing risk and opportunity. Share lessons learned and best practices across the sector. Influence industry standards for PH/ULE risk management.',
+    'Apply innovative approaches to balancing risk and opportunity. Share lessons learned and best practices across the sector. Influence national industry standards for PH/ULE risk management. Lead collaborative initiatives to improve sector-wide resilience.',
+  ],
+  'Post-Occupancy': [
+    'Develop a structured Soft Landings plan for PH/ULE projects. Introduce tenant liaison processes for education and support. Create simple feedback mechanisms (surveys, check-ins). Allocate resources for post-occupancy engagement.',
+    'Formalise the engagement strategy including Soft Landings and Landlord–Tenant Liaison Plans. Deliver proactive tenant education sessions on PH/ULE benefits. Use feedback to inform performance improvements. Monitor satisfaction and energy performance regularly.',
+    'Implement a fully integrated post-occupancy framework. Lead sector-wide best practice training for engagement and feedback systems. Use insights to influence future design and delivery standards.',
+    'Implement a fully integrated post-occupancy framework and lead sector-wide best practice. Use insights to influence future design and delivery standards. Collaborate nationally to benchmark and optimise tenant experience.',
+  ],
+  'Monitoring': [
+    'Implement structured POE and real-time monitoring systems across projects. Store collected data in a central repository. Train staff on data analysis for performance improvement and reducing the performance gap.',
+    'Adopt centralised digital systems for monitoring and feedback. Develop pattern books based on performance data. Integrate insights into design and operational strategies. Formalise continuous improvement processes.',
+    'Lead sector-wide innovation in data-driven POE. Implement real-time analytics and predictive feedback loops. Share data and insights to influence industry standards.',
+    'Lead sector-wide innovation in data-driven POE. Implement real-time analytics and predictive feedback loops. Share data and insights to influence industry standards. Maintain a central digital database for national benchmarking and learning.',
+  ],
+  'Supply Chain Engagement': [
+    'Actively engage suppliers in PH/ULE project planning. Include PH/ULE requirements in tender documents and contracts. Encourage suppliers to invest in PH/ULE capability. Provide training or resources to build supplier understanding.',
+    'Develop strategic partnerships with committed suppliers. Align supplier practices with organisational PH/ULE goals. Collaborate on innovation and problem-solving for delivery challenges. Monitor supplier performance against PH/ULE standards.',
+    'Co-drive PH/ULE innovation with suppliers across projects. Share best practices and jointly promote PH/ULE adoption in the market. Influence wider supply chain standards through collaboration.',
+    'Co-drive PH/ULE innovation with suppliers at a national level. Share best practices and jointly promote PH/ULE adoption. Position your organisation and suppliers as definitive sector leaders in PH/ULE delivery.',
+  ],
+  'Supplier Capability': [
+    'Support suppliers in accessing structured training programmes. Promote use of PHPP or similar modelling tools. Include training requirements in procurement documents. Begin monitoring supplier capability development.',
+    'Actively co-develop training programmes with suppliers. Promote certification schemes (e.g., Passivhaus Tradesperson). Provide technical resources and mentoring for upskilling. Embed upskilling requirements into contracts.',
+    'Lead supply chain transformation through sector-wide training initiatives. Collaborate with certifiers and training organisations (e.g., PHT, AECB). Share best practices and benchmarking data across the sector.',
+    'Lead supply chain transformation through sector-wide training initiatives nationally. Collaborate with certifiers and training organisations. Share best practices and benchmarking data. Position your organisation and suppliers as national leaders in PH/ULE delivery.',
+  ],
+  'Supplier Innovation': [
+    'Support suppliers in adopting improved methods and materials. Include innovation requirements in procurement and tender documents. Provide access to technical resources and case studies. Begin monitoring innovation uptake in projects.',
+    'Actively incentivise innovation through contracts and partnerships. Collaborate with suppliers on prefabrication and high-performance components. Develop joint initiatives to improve delivery efficiency. Share lessons learned internally and externally.',
+    'Drive sector-wide innovation by co-creating new solutions with suppliers. Develop prototypes and pattern books for advanced construction methods. Lead collaborative research and development initiatives.',
+    'Drive sector-wide innovation by co-creating new solutions with suppliers nationally. Develop prototypes and pattern books for advanced construction methods. Lead collaborative research and development initiatives. Position your organisation and suppliers as definitive leaders in PH/ULE innovation.',
+  ],
+  'Procurement Alignment': [
+    'Formalise ECI in selected projects. Link procurement decisions to PH/ULE performance goals. Engage suppliers earlier in design discussions to improve alignment.',
+    'Implement coordinated procurement frameworks. Build long-term partnerships with key contractors and manufacturers. Use standardised tools (e.g., PH Responsibility Matrix).',
+    'Lead sector-wide best practice sharing. Adopt collaborative delivery models (e.g., alliancing). Standardise processes and publish case studies to influence the sector.',
+    'Lead sector-wide best practice sharing. Adopt collaborative delivery models. Standardise processes and publish case studies to influence sector and national guidance on integrated procurement.',
+  ],
+  'Scalability': [
+    'Develop a basic PH/ULE delivery strategy. Standardise key processes from pilot (design, procurement). Train staff on PH/ULE principles and quality assurance to build a repeatable foundation.',
+    'Implement formal project management systems. Secure a reliable supply chain for PH components. Monitor KPIs for quality, timeliness, and cost.',
+    'Expand capacity with dedicated PH/ULE teams. Adopt digital tools for portfolio management. Share benchmarks and best practices with industry peers.',
+    'Expand capacity with dedicated PH/ULE teams. Adopt digital tools for portfolio management. Share benchmarks and best practices with industry peers nationally and internationally.',
+  ],
+};
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function getNow(page, q) {
+  const v = localStorage.getItem('phocus_p' + page + '_q' + q + '_c1');
+  return (v !== null && v !== '') ? parseInt(v) : null;
+}
+function getFuture(page, q) {
+  const v = localStorage.getItem('phocus_p' + page + '_q' + q + '_c2');
+  return (v !== null && v !== '') ? parseInt(v) : null;
+}
+
+// ─────────────────────────────────────────────
+// SLIDER CONTROLLER
+// ─────────────────────────────────────────────
+function makeSlider(strip, dotsEl, prevBtn, nextBtn, counterEl, count) {
+  let current = 0;
+  function goTo(idx) {
+    current = Math.max(0, Math.min(idx, count - 1));
+    strip.style.transform = 'translateX(-' + (current * 100) + '%)';
+    dotsEl.querySelectorAll('.slide-dot').forEach(function(d, i) {
+      d.classList.toggle('active', i === current);
+    });
+    counterEl.textContent = 'Step ' + (current + 1) + ' of ' + count;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === count - 1;
+  }
+  prevBtn.addEventListener('click', function() { goTo(current - 1); });
+  nextBtn.addEventListener('click', function() { goTo(current + 1); });
+  goTo(0);
+}
+
+// ─────────────────────────────────────────────
+// BUILD
+// ─────────────────────────────────────────────
+function buildPlan() {
+  let totalAnswered = 0, totalGaps = 0, totalTop = 0;
+  const bySection = {}, sectionIcons = {};
+
+  QUESTIONS.forEach(function(q) {
+    const now = getNow(q.page, q.q);
+    if (now === null) return;
+    totalAnswered++;
+
+    const future = getFuture(q.page, q.q);
+    const target  = (future !== null && future > now) ? future : (now < 5 ? now + 1 : 5);
+
+    const sec = q.section;
+    if (!bySection[sec]) bySection[sec] = [];
+    sectionIcons[sec] = q.sectionIcon;
+
+    if (now >= target) {
+      totalTop++;
+      bySection[sec].push({ q, now, target, isTop: true });
+    } else {
+      totalGaps++;
+      bySection[sec].push({ q, now, target, isTop: false });
+    }
+  });
+
+  if (totalAnswered === 0) {
+    document.getElementById('no-data').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('plan-content').style.display = 'block';
+  document.getElementById('sum-total').textContent = totalAnswered;
+  document.getElementById('sum-gaps').textContent  = totalGaps;
+  document.getElementById('sum-top').textContent   = totalTop;
+
+  const container = document.getElementById('plan-sections');
+
+  Object.entries(bySection).forEach(function([section, items], si) {
+    const block = document.createElement('div');
+    block.className = 'section-block';
+
+    const title = document.createElement('div');
+    title.className = 'section-title';
+    title.innerHTML = '<span class="section-icon">' + sectionIcons[section] + '</span>' + section;
+    block.appendChild(title);
+
+    const grid = document.createElement('div');
+    grid.className = 'cards-grid';
+
+    items.forEach(function(item, ci) {
+      const nowLabel    = LEVELS[item.now - 1];
+      const targetLabel = LEVELS[item.target - 1];
+      const hClass      = item.isTop ? 'top' : ('to-' + item.target);
+      const pColour     = item.isTop ? '#28a745' : (STEP_COLOURS[item.target] || '#667eea');
+      const pPct        = Math.min(Math.round((item.now / item.target) * 100), 100);
+
+      const card = document.createElement('div');
+      card.className = 'flip-card-outer';
+      card.style.animationDelay = ((si * 5 + ci) * 50) + 'ms';
+
+      // Header
+      const header = document.createElement('div');
+      header.className = 'card-header ' + hClass;
+      header.innerHTML =
+        '<div class="card-header-left">' +
+          '<div class="card-q-label">' + item.q.label + '</div>' +
+          '<div class="card-movement">' +
+            (item.isTop
+              ? (item.now === 5 ? '⭐ Innovator — top level reached' : '✓ Target reached: ' + targetLabel)
+              : 'Currently: ' + nowLabel + '  →  Target: ' + targetLabel) +
+          '</div>' +
+        '</div>' +
+        '<div class="level-badge">' + item.now + '</div>';
+      card.appendChild(header);
+
+      // Progress bar
+      const pbWrap = document.createElement('div');
+      pbWrap.className = 'progress-bar-wrap';
+      pbWrap.innerHTML =
+        '<div class="progress-track"><div class="progress-fill" style="width:' + pPct + '%;background:' + pColour + '"></div></div>' +
+        '<div class="progress-label">Level ' + item.now + ' / ' + item.target + '</div>';
+      card.appendChild(pbWrap);
+
+      if (item.isTop) {
+        // Top / reached-target body
+        const body = document.createElement('div');
+        body.className = 'is-top-body';
+        body.innerHTML =
+          '<div class="top-badge">✓ ' + targetLabel + '</div>' +
+          '<div class="card-advice">' +
+            (item.now === 5
+              ? 'You are already operating at the highest level for this area. Continue to lead the sector, share knowledge and influence national policy and practice.'
+              : 'You have reached your target level of <strong>' + targetLabel + '</strong>. Consider whether you want to set a higher target in future.') +
+          '</div>';
+        card.appendChild(body);
+
+      } else {
+        // Sliding steps
+        const allAdvice   = ADVICE[item.q.label] || [];
+        const stepsToShow = allAdvice.slice(item.now - 1, item.target - 1);
+        const stepCount   = stepsToShow.length;
+
+        const viewport = document.createElement('div');
+        viewport.className = 'slides-viewport';
+
+        const strip = document.createElement('div');
+        strip.className = 'slides-strip';
+
+        stepsToShow.forEach(function(stepText, i) {
+          const fromLevel  = item.now + i;
+          const toLevel    = fromLevel + 1;
+          const fromLabel  = LEVELS[fromLevel - 1];
+          const toLabel    = LEVELS[toLevel - 1];
+          const stepColour = STEP_COLOURS[toLevel] || '#667eea';
+
+          const slide = document.createElement('div');
+          slide.className = 'advice-slide';
+          slide.innerHTML =
+            '<div class="step-label" style="color:' + stepColour + '">' +
+              fromLabel + ' → ' + toLabel +
+            '</div>' +
+            '<div class="card-advice">' + stepText + '</div>';
+          strip.appendChild(slide);
+        });
+
+        viewport.appendChild(strip);
+        card.appendChild(viewport);
+
+        // Nav row
+        const navRow = document.createElement('div');
+        navRow.className = 'slide-nav';
+
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'arrow-btn';
+        prevBtn.innerHTML = '&#8592;';
+        prevBtn.setAttribute('aria-label', 'Previous step');
+
+        const dotsEl = document.createElement('div');
+        dotsEl.className = 'slide-dots';
+        for (let d = 0; d < stepCount; d++) {
+          const dot = document.createElement('div');
+          dot.className = 'slide-dot' + (d === 0 ? ' active' : '');
+          dotsEl.appendChild(dot);
+        }
+
+        const counterEl = document.createElement('div');
+        counterEl.className = 'step-counter';
+
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'arrow-btn';
+        nextBtn.innerHTML = '&#8594;';
+        nextBtn.setAttribute('aria-label', 'Next step');
+
+        navRow.appendChild(prevBtn);
+        navRow.appendChild(dotsEl);
+        navRow.appendChild(counterEl);
+        navRow.appendChild(nextBtn);
+        card.appendChild(navRow);
+
+        if (stepCount > 1) {
+          makeSlider(strip, dotsEl, prevBtn, nextBtn, counterEl, stepCount);
+        } else {
+          prevBtn.disabled = true;
+          nextBtn.disabled = true;
+          counterEl.textContent = 'Step 1 of 1';
+        }
+      }
+
+      grid.appendChild(card);
+    });
+
+    block.appendChild(grid);
+    container.appendChild(block);
+  });
+}
+
+buildPlan();
+</script>
+</body>
+</html>

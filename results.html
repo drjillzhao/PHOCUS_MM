@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHOCUS Results</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #2c3e50;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 1.5rem 1rem;
+    }
+
+    .hero {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 2rem;
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Navigation ── */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      cursor: pointer;
+      border: none;
+    }
+
+    .nav-button.secondary {
+      background: #f8f9fa;
+      color: #495057;
+      border: 2px solid #dee2e6;
+    }
+    .nav-button.secondary:hover {
+      background: #e9ecef;
+      transform: translateX(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    .nav-button.danger {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: white;
+    }
+    .nav-button.danger:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 16px rgba(220,53,69,0.4);
+    }
+
+    /* ── Headings ── */
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .page-subtitle {
+      font-size: 1rem;
+      color: #6c757d;
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #667eea;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ── No-data state ── */
+    .no-data {
+      text-align: center;
+      padding: 3rem;
+      background: #f8f9fa;
+      border-radius: 12px;
+      color: #6c757d;
+      font-size: 1rem;
+    }
+    .no-data a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* ── Incomplete warning ── */
+    .incomplete-warning {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 8px;
+      padding: 0.875rem 1.25rem;
+      font-size: 0.9rem;
+      color: #856404;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Overall score banner ── */
+    .score-banner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .score-card {
+      padding: 1.5rem 1.75rem;
+      border-radius: 12px;
+    }
+
+    .score-card.now {
+      background: linear-gradient(135deg, rgba(102,126,234,0.08) 0%, rgba(118,75,162,0.08) 100%);
+      border: 2px solid #667eea;
+    }
+    .score-card.future {
+      background: linear-gradient(135deg, rgba(253,126,20,0.08) 0%, rgba(230,100,0,0.08) 100%);
+      border: 2px solid #fd7e14;
+    }
+
+    .score-card h3 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #6c757d;
+      margin-bottom: 0.5rem;
+    }
+
+    .score-value {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .score-card.now  .score-value { color: #667eea; }
+    .score-card.future .score-value { color: #fd7e14; }
+
+    .score-sub {
+      font-size: 0.85rem;
+      color: #495057;
+    }
+
+    .score-level-pill {
+      display: inline-block;
+      padding: 0.2rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 0.4rem;
+      color: white;
+    }
+
+    /* ── Chart ── */
+    .chart-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem 0;
+    }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+    }
+
+    .chart-legend {
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+      padding: 0.75rem 1.25rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #495057;
+    }
+
+    .legend-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .chart-note {
+      font-size: 0.78rem;
+      color: #6c757d;
+      margin-left: auto;
+      font-style: italic;
+    }
+
+    /* ── Section grid ── */
+    .section-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .section-card {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 1.25rem;
+      border-left: 4px solid #667eea;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .section-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+
+    .section-card h4 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: #6c757d;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+    }
+
+    .section-scores {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .sec-score {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .sec-score .val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .sec-score .lbl {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      color: #6c757d;
+      margin-top: 0.1rem;
+    }
+    .sec-score.now .val    { color: #667eea; }
+    .sec-score.future .val { color: #fd7e14; }
+
+    .sec-divider {
+      color: #dee2e6;
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    .sec-level-col {
+      margin-left: auto;
+      text-align: right;
+    }
+    .sec-level-col .lbl-title {
+      font-size: 0.68rem;
+      color: #6c757d;
+      text-transform: uppercase;
+    }
+    .sec-level-col .now-lv  { font-size: 0.78rem; font-weight: 700; color: #667eea; }
+    .sec-level-col .fut-lv  { font-size: 0.78rem; font-weight: 700; color: #fd7e14; }
+
+    /* ── Detailed table ── */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: white;
+      font-size: 0.85rem;
+    }
+
+    thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    th {
+      padding: 0.875rem 1rem;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    th:first-child { border-top-left-radius: 12px; }
+    th:last-child  { border-top-right-radius: 12px; }
+
+    td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid #e9ecef;
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+
+    .section-header-row td {
+      background: linear-gradient(135deg, rgba(102,126,234,0.06) 0%, rgba(118,75,162,0.06) 100%);
+      font-weight: 700;
+      color: #667eea;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      padding-top: 0.875rem;
+      padding-bottom: 0.875rem;
+    }
+
+    .total-row td {
+      background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);
+      font-weight: 800;
+      font-size: 0.9rem;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      border-top: 2px solid #667eea;
+    }
+
+    .raw-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: white;
+    }
+    .raw-badge.l1 { background: #dc3545; }
+    .raw-badge.l2 { background: #fd7e14; }
+    .raw-badge.l3 { background: #ffc107; color: #333; }
+    .raw-badge.l4 { background: #90ee90; color: #333; }
+    .raw-badge.l5 { background: #28a745; }
+    .raw-badge.none { background: #dee2e6; color: #6c757d; }
+
+    .ws { font-weight: 700; font-family: monospace; font-size: 0.9rem; }
+    .ws.now    { color: #667eea; }
+    .ws.future { color: #fd7e14; }
+    .ws.miss   { color: #ced4da; }
+
+    /* ── Responsive ── */
+    @media print {
+      body {
+        background: white !important;
+        padding: 0;
+      }
+      .hero {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        padding: 1rem !important;
+      }
+      .nav-buttons,
+      .score-banner,
+      .chart-wrapper,
+      .chart-legend,
+      .incomplete-warning,
+      button,
+      h2:not(.print-show) {
+        display: none !important;
+      }
+      #print-details {
+        display: block !important;
+      }
+      .print-header {
+        display: block !important;
+      }
+      table { font-size: 0.8rem; }
+      .section-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .print-header {
+      display: none;
+      margin-bottom: 1.5rem;
+    }
+      h1 { font-size: 2rem; }
+      .score-banner { grid-template-columns: 1fr; }
+      .score-value { font-size: 2.2rem; }
+      th, td { padding: 0.6rem 0.75rem; font-size: 0.78rem; }
+      .chart-note { display: none; }
+    }
+    @media (max-width: 480px) {
+      .nav-buttons { flex-direction: column; }
+      .nav-button  { width: 100%; justify-content: center; }
+      .section-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<main class="hero">
+
+  <!-- Nav -->
+  <div class="nav-buttons">
+    <a href="integration-scalability.html" class="nav-button secondary">← Back to Assessment</a>
+    <button onclick="clearAllData()" class="nav-button danger">🗑 Clear All Data</button>
+  </div>
+
+  <h1>PHOCUS Results</h1>
+  <p class="page-subtitle">Weighted scores across all six assessment sections — Now vs Future</p>
+
+  <!-- No-data fallback -->
+  <div id="no-data" class="no-data" style="display:none">
+    <p style="font-size:1.3rem;margin-bottom:0.5rem">📋 No assessment data found</p>
+    <p>Please complete the assessment pages before viewing results.</p>
+    <p style="margin-top:1rem"><a href="policy-and-funding-final.html">Start the assessment →</a></p>
+  </div>
+
+  <!-- Main results (hidden until data confirmed) -->
+  <div id="results-content" style="display:none">
+
+    <!-- Incomplete warning -->
+    <div id="incomplete-warning" class="incomplete-warning" style="display:none">
+      ⚠️ Some questions have not been answered yet. Unanswered questions score 0 in the chart and totals.
+    </div>
+
+    <!-- Radar chart -->
+    <h2>🕸 Radar Chart</h2>
+    <div class="chart-legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#667eea"></div>
+        <span>Now</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#fd7e14"></div>
+        <span>Future</span>
+      </div>
+      <span class="chart-note">Each axis shows the weighted average score (1–5) for that section.</span>
+    </div>
+    <div class="chart-wrapper">
+      <div class="chart-container">
+        <canvas id="radarChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Overall score cards -->
+    <h2>📊 Overall Scores</h2>
+    <div class="score-banner">
+      <div class="score-card now">
+        <h3>Now — Total Weighted Score</h3>
+        <div class="score-value" id="now-total">—</div>
+        <div class="score-sub">out of <strong id="max-score">—</strong> possible</div>
+        <div><span class="score-level-pill" id="now-pill" style="background:#667eea">—</span></div>
+      </div>
+      <div class="score-card future">
+        <h3>Future — Total Weighted Score</h3>
+        <div class="score-value" id="future-total">—</div>
+        <div class="score-sub">out of <strong id="max-score-2">—</strong> possible</div>
+        <div><span class="score-level-pill" id="future-pill" style="background:#fd7e14">—</span></div>
+      </div>
+    </div>
+
+    <!-- PDF download + Action Plan buttons -->
+    <div style="margin-top:2rem;text-align:center;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <button onclick="downloadPDF()" class="nav-button" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;font-size:1rem;padding:0.9rem 2rem">
+        📥 Download Detailed Breakdown
+      </button>
+      <a href="action-plan.html" class="nav-button" style="background:linear-gradient(135deg,#27ae60 0%,#1a7a44 100%);color:white;font-size:1rem;padding:0.9rem 2rem;text-decoration:none">
+        📋 View My Action Plan
+      </a>
+    </div>
+
+    <!-- Section summaries + Detailed table — hidden in normal view, shown for print -->
+    <div id="print-details" style="display:none">
+
+      <div class="print-header">
+        <h1 style="-webkit-text-fill-color:unset;color:#667eea">PHOCUS Results</h1>
+        <p style="color:#6c757d">Detailed breakdown — printed from results page</p>
+      </div>
+
+      <h2>📁 Section Summaries</h2>
+      <div class="section-grid" id="section-grid"></div>
+
+      <h2>📋 Detailed Breakdown</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Question</th>
+              <th>Weight</th>
+              <th>Now</th>
+              <th>Now × Weight</th>
+              <th>Future</th>
+              <th>Future × Weight</th>
+            </tr>
+          </thead>
+          <tbody id="detail-tbody"></tbody>
+        </table>
+      </div>
+
+    </div><!-- /print-details -->
+
+  </div><!-- /results-content -->
+</main>
+
+<script>
+// ─────────────────────────────────────────────
+// 1. DATA DEFINITIONS
+// ─────────────────────────────────────────────
+const QUESTIONS = [
+  { page:1, q:1, section:'Policy & Funding',          label:'Policy Framework',        radarLabel:['Policy','Framework'],       weight:1.304 },
+  { page:1, q:2, section:'Policy & Funding',          label:'Funding',                 radarLabel:['Funding'],                  weight:1.136 },
+  { page:2, q:1, section:'Overarching Strategies',    label:'Delivery Strategy',       radarLabel:['Delivery','Strategy'],      weight:1.03  },
+  { page:2, q:2, section:'Overarching Strategies',    label:'Quality Assurance',       radarLabel:['Quality','Assurance'],      weight:0.8   },
+  { page:2, q:3, section:'Overarching Strategies',    label:'Procurement Strategy',    radarLabel:['Procurement','Strategy'],   weight:0.8   },
+  { page:3, q:1, section:'Organisational Capability', label:'Leadership & Governance', radarLabel:['Leadership &','Governance'],weight:1.3   },
+  { page:3, q:2, section:'Organisational Capability', label:'Training & Skills',       radarLabel:['Training &','Skills'],      weight:1.14  },
+  { page:3, q:3, section:'Organisational Capability', label:'Culture',                 radarLabel:['Culture'],                  weight:1.13  },
+  { page:3, q:4, section:'Organisational Capability', label:'Cost-Benefit Analysis',   radarLabel:['Cost-Benefit','Analysis'],  weight:1.0   },
+  { page:3, q:5, section:'Organisational Capability', label:'Stakeholder Engagement',  radarLabel:['Stakeholder','Engagement'], weight:0.9   },
+  { page:4, q:1, section:'Process Maturity',          label:'Process Documentation',   radarLabel:['Process','Documentation'],  weight:1.16  },
+  { page:4, q:2, section:'Process Maturity',          label:'Project Management',      radarLabel:['Project','Management'],     weight:0.93  },
+  { page:4, q:3, section:'Process Maturity',          label:'Risk Management',         radarLabel:['Risk','Management'],        weight:1.07  },
+  { page:4, q:4, section:'Process Maturity',          label:'Post-Occupancy',          radarLabel:['Post-','Occupancy'],        weight:1.03  },
+  { page:4, q:5, section:'Process Maturity',          label:'Monitoring',              radarLabel:['Monitoring'],               weight:1.13  },
+  { page:5, q:1, section:'Supply Chain Readiness',    label:'Supply Chain Engagement', radarLabel:['Supply Chain','Engagement'],weight:1.0   },
+  { page:5, q:2, section:'Supply Chain Readiness',    label:'Supplier Capability',     radarLabel:['Supplier','Capability'],    weight:0.91  },
+  { page:5, q:3, section:'Supply Chain Readiness',    label:'Supplier Innovation',     radarLabel:['Supplier','Innovation'],    weight:0.43  },
+  { page:6, q:1, section:'Integration & Scalability', label:'Procurement Alignment',   radarLabel:['Procurement','Alignment'],  weight:0.736 },
+  { page:6, q:2, section:'Integration & Scalability', label:'Scalability',             radarLabel:['Scalability'],              weight:1.056 },
+];
+
+const LEVEL_NAMES  = ['Observer','Early Adopter','Effective Deliverer','Leader','Innovator'];
+const LEVEL_COLORS = { 'Observer':'#dc3545','Early Adopter':'#fd7e14','Effective Deliverer':'#ffc107','Leader':'#28a745','Innovator':'#155724' };
+
+const SECTION_COLORS = {
+  'Policy & Funding':          '#e74c3c',
+  'Overarching Strategies':    '#e67e22',
+  'Organisational Capability': '#f39c12',
+  'Process Maturity':          '#27ae60',
+  'Supply Chain Readiness':    '#2980b9',
+  'Integration & Scalability': '#8e44ad',
+};
+
+// ─────────────────────────────────────────────
+// 2. HELPERS
+// ─────────────────────────────────────────────
+function getVal(page, q, col) {
+  const v = localStorage.getItem('phocus_p' + page + '_q' + q + '_c' + col);
+  return (v !== null && v !== '') ? parseInt(v) : null;
+}
+
+function levelFromAvg(avg) {
+  if (avg === null || isNaN(avg)) return '—';
+  const idx = Math.min(4, Math.max(0, Math.round(avg) - 1));
+  return LEVEL_NAMES[idx];
+}
+
+function rawBadge(val) {
+  if (val === null) return '<span class="raw-badge none">—</span>';
+  return '<span class="raw-badge l' + val + '">' + val + '</span>';
+}
+
+// ─────────────────────────────────────────────
+// 3. BUILD PAGE
+// ─────────────────────────────────────────────
+function buildResults() {
+  const nowRaw      = [];
+  const futureRaw   = [];
+  const nowW        = [];  // weighted
+  const futureW     = [];  // weighted
+
+  let hasData       = false;
+  let hasIncomplete = false;
+
+  QUESTIONS.forEach(function(q) {
+    const n = getVal(q.page, q.q, 1);
+    const f = getVal(q.page, q.q, 2);
+    if (n !== null || f !== null) hasData = true;
+    if (n === null || f === null) hasIncomplete = true;
+    nowRaw.push(n);
+    futureRaw.push(f);
+    nowW.push(n !== null   ? parseFloat((n * q.weight).toFixed(4)) : 0);
+    futureW.push(f !== null ? parseFloat((f * q.weight).toFixed(4)) : 0);
+  });
+
+  if (!hasData) {
+    document.getElementById('no-data').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('results-content').style.display = 'block';
+
+  if (hasIncomplete) {
+    document.getElementById('incomplete-warning').style.display = 'block';
+  }
+
+  // ── Overall totals ──
+  const sumWeights = QUESTIONS.reduce(function(s,q){ return s + q.weight; }, 0);
+  const maxPossible = 100; // weights are designed to sum to 20 (5×20=100); displayed as 100
+  const nowTotal    = parseFloat(nowW.reduce(function(s,v){ return s+v; },0).toFixed(2));
+  const futureTotal = parseFloat(futureW.reduce(function(s,v){ return s+v; },0).toFixed(2));
+
+  const nowAvg    = nowTotal    / sumWeights;
+  const futureAvg = futureTotal / sumWeights;
+  const nowLevel    = levelFromAvg(nowAvg);
+  const futureLevel = levelFromAvg(futureAvg);
+
+  document.getElementById('now-total').textContent    = nowTotal.toFixed(1);
+  document.getElementById('future-total').textContent = futureTotal.toFixed(1);
+  document.getElementById('max-score').textContent    = maxPossible;
+  document.getElementById('max-score-2').textContent  = maxPossible;
+
+  const nowPill = document.getElementById('now-pill');
+  nowPill.textContent = nowLevel + '  (avg ' + nowAvg.toFixed(2) + '/5)';
+  nowPill.style.background = LEVEL_COLORS[nowLevel] || '#667eea';
+
+  const futurePill = document.getElementById('future-pill');
+  futurePill.textContent = futureLevel + '  (avg ' + futureAvg.toFixed(2) + '/5)';
+  futurePill.style.background = LEVEL_COLORS[futureLevel] || '#fd7e14';
+
+  // ── Radar chart — 6 sections, weighted average per section (0–5 scale) ──
+  const sectionNames = [];
+  QUESTIONS.forEach(function(q) {
+    if (sectionNames.indexOf(q.section) === -1) sectionNames.push(q.section);
+  });
+
+  const radarNow    = [];
+  const radarFuture = [];
+  const radarSectionTotals = []; // { nowW, futW, sumW } per section
+
+  sectionNames.forEach(function(section) {
+    const indices = QUESTIONS.reduce(function(arr, q, i) {
+      return q.section === section ? arr.concat(i) : arr;
+    }, []);
+    const sNowW  = indices.reduce(function(s,i){ return s + nowW[i]; }, 0);
+    const sFutW  = indices.reduce(function(s,i){ return s + futureW[i]; }, 0);
+    const sSumW  = indices.reduce(function(s,i){ return s + QUESTIONS[i].weight; }, 0);
+    radarNow.push(parseFloat((sNowW / sSumW).toFixed(3)));
+    radarFuture.push(parseFloat((sFutW / sSumW).toFixed(3)));
+    radarSectionTotals.push({ nowW: sNowW, futW: sFutW, sumW: sSumW });
+  });
+
+  // Short display labels (wrap long names)
+  const radarLabels = [
+    ['Policy &', 'Funding'],
+    ['Overarching', 'Strategies'],
+    ['Organisational', 'Capability'],
+    ['Process', 'Maturity'],
+    ['Supply Chain', 'Readiness'],
+    ['Integration &', 'Scalability']
+  ];
+
+  new Chart(document.getElementById('radarChart').getContext('2d'), {
+    type: 'radar',
+    data: {
+      labels: radarLabels,
+      datasets: [
+        {
+          label: 'Now',
+          data: radarNow,
+          backgroundColor: 'rgba(102,126,234,0.22)',
+          borderColor: '#667eea',
+          borderWidth: 2.5,
+          pointBackgroundColor: '#667eea',
+          pointRadius: 5,
+          pointHoverRadius: 8,
+        },
+        {
+          label: 'Future',
+          data: radarFuture,
+          backgroundColor: 'rgba(253,126,20,0.22)',
+          borderColor: '#fd7e14',
+          borderWidth: 2.5,
+          pointBackgroundColor: '#fd7e14',
+          pointRadius: 5,
+          pointHoverRadius: 8,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: function(items) {
+              return sectionNames[items[0].dataIndex];
+            },
+            label: function(item) {
+              const isNow = item.datasetIndex === 0;
+              const avg   = item.raw;
+              const lvl   = levelFromAvg(avg);
+              const col   = isNow ? 'Now' : 'Future';
+              return ' ' + col + ': avg ' + avg.toFixed(2) + ' / 5  [' + lvl + ']';
+            }
+          }
+        }
+      },
+      scales: {
+        r: {
+          min: 0,
+          max: 5,
+          ticks: {
+            stepSize: 1,
+            font: { size: 9 },
+            color: '#6c757d',
+            backdropColor: 'transparent',
+          },
+          pointLabels: {
+            font: { size: 11 },
+            color: '#2c3e50',
+            padding: 8,
+          },
+          grid:       { color: 'rgba(0,0,0,0.07)' },
+          angleLines: { color: 'rgba(0,0,0,0.1)'  },
+        }
+      }
+    }
+  });
+
+  // ── Section summary cards ──
+  const sections = [];
+  QUESTIONS.forEach(function(q){ if (sections.indexOf(q.section) === -1) sections.push(q.section); });
+  const sectionGrid = document.getElementById('section-grid');
+
+  sections.forEach(function(section) {
+    const indices = QUESTIONS.reduce(function(arr, q, i){ return q.section === section ? arr.concat(i) : arr; }, []);
+    const sNowW   = indices.reduce(function(s,i){ return s + nowW[i]; }, 0);
+    const sFutW   = indices.reduce(function(s,i){ return s + futureW[i]; }, 0);
+    const sSumW   = indices.reduce(function(s,i){ return s + QUESTIONS[i].weight; }, 0);
+    const sNowAvg = sNowW / sSumW;
+    const sFutAvg = sFutW / sSumW;
+
+    const card = document.createElement('div');
+    card.className = 'section-card';
+    card.style.borderLeftColor = SECTION_COLORS[section] || '#667eea';
+    card.innerHTML =
+      '<h4>' + section + '</h4>' +
+      '<div class="section-scores">' +
+        '<div class="sec-score now">' +
+          '<span class="val">' + sNowW.toFixed(1) + '</span>' +
+          '<span class="lbl">Now</span>' +
+        '</div>' +
+        '<span class="sec-divider">|</span>' +
+        '<div class="sec-score future">' +
+          '<span class="val">' + sFutW.toFixed(1) + '</span>' +
+          '<span class="lbl">Future</span>' +
+        '</div>' +
+        '<div class="sec-level-col">' +
+          '<div class="lbl-title">Avg level</div>' +
+          '<div class="now-lv">' + levelFromAvg(sNowAvg) + '</div>' +
+          '<div class="fut-lv">' + levelFromAvg(sFutAvg) + '</div>' +
+        '</div>' +
+      '</div>';
+    sectionGrid.appendChild(card);
+  });
+
+  // ── Detailed table ──
+  const tbody = document.getElementById('detail-tbody');
+  let currentSection = '';
+
+  QUESTIONS.forEach(function(q, i) {
+    if (q.section !== currentSection) {
+      currentSection = q.section;
+      const indices = QUESTIONS.reduce(function(arr, qq, ii){ return qq.section === q.section ? arr.concat(ii) : arr; }, []);
+      const sNow = indices.reduce(function(s,ii){ return s + nowW[ii]; }, 0);
+      const sFut = indices.reduce(function(s,ii){ return s + futureW[ii]; }, 0);
+
+      const hr = document.createElement('tr');
+      hr.className = 'section-header-row';
+      hr.innerHTML =
+        '<td colspan="2" style="padding-left:1rem">' + q.section + '</td>' +
+        '<td></td>' +
+        '<td></td>' +
+        '<td class="ws now">' + sNow.toFixed(2) + '</td>' +
+        '<td></td>' +
+        '<td class="ws future">' + sFut.toFixed(2) + '</td>';
+      tbody.appendChild(hr);
+    }
+
+    const nR = nowRaw[i];
+    const fR = futureRaw[i];
+    const nW = nowW[i];
+    const fW = futureW[i];
+
+    const row = document.createElement('tr');
+    row.innerHTML =
+      '<td style="color:#adb5bd;font-size:0.78rem">' + (i + 1) + '</td>' +
+      '<td style="font-weight:500">' + q.label + '</td>' +
+      '<td style="font-family:monospace;font-size:0.82rem;color:#6c757d">' + q.weight + '</td>' +
+      '<td>' + rawBadge(nR) + '</td>' +
+      '<td class="ws ' + (nR !== null ? 'now' : 'miss') + '">' + (nR !== null ? nW.toFixed(3) : '—') + '</td>' +
+      '<td>' + rawBadge(fR) + '</td>' +
+      '<td class="ws ' + (fR !== null ? 'future' : 'miss') + '">' + (fR !== null ? fW.toFixed(3) : '—') + '</td>';
+    tbody.appendChild(row);
+  });
+
+  // Total row
+  const tr = document.createElement('tr');
+  tr.className = 'total-row';
+  tr.innerHTML =
+    '<td colspan="3" style="text-align:right;padding-right:1.5rem;color:#667eea">TOTAL WEIGHTED SCORE</td>' +
+    '<td></td>' +
+    '<td class="ws now" style="font-size:1rem">' + nowTotal.toFixed(2) + '</td>' +
+    '<td></td>' +
+    '<td class="ws future" style="font-size:1rem">' + futureTotal.toFixed(2) + '</td>';
+  tbody.appendChild(tr);
+}
+
+// ─────────────────────────────────────────────
+// 4. CLEAR DATA
+// ─────────────────────────────────────────────
+function clearAllData() {
+  if (!confirm('Clear all assessment data? This cannot be undone.')) return;
+  QUESTIONS.forEach(function(q) {
+    localStorage.removeItem('phocus_p' + q.page + '_q' + q.q + '_c1');
+    localStorage.removeItem('phocus_p' + q.page + '_q' + q.q + '_c2');
+  });
+  location.reload();
+}
+
+// ─────────────────────────────────────────────
+// 5. DOWNLOAD DETAILED BREAKDOWN (HTML file)
+// ─────────────────────────────────────────────
+function downloadPDF() {
+  // Grab the rendered inner HTML of the print-details section
+  const detailsEl = document.getElementById('print-details');
+  detailsEl.style.display = 'block'; // render it so innerHTML is populated
+  const detailsHTML = detailsEl.innerHTML;
+  detailsEl.style.display = 'none';
+
+  const nowTotal    = document.getElementById('now-total').textContent;
+  const futureTotal = document.getElementById('future-total').textContent;
+  const maxScore    = document.getElementById('max-score').textContent;
+  const nowPill     = document.getElementById('now-pill').textContent;
+  const futurePill  = document.getElementById('future-pill').textContent;
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHOCUS Results – Detailed Breakdown</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; line-height:1.6; color:#2c3e50; background:#f4f6fb; padding:2rem 1rem; }
+    .page { max-width:1100px; margin:0 auto; background:white; border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,0.12); padding:2.5rem; }
+    h1 { font-size:2rem; font-weight:800; color:#667eea; margin-bottom:0.25rem; }
+    .subtitle { color:#6c757d; font-size:0.95rem; margin-bottom:1.75rem; }
+    .score-banner { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:2rem; }
+    .score-card { padding:1.25rem 1.5rem; border-radius:12px; }
+    .score-card.now    { background:rgba(102,126,234,0.08); border:2px solid #667eea; }
+    .score-card.future { background:rgba(253,126,20,0.08);  border:2px solid #fd7e14; }
+    .score-card h3 { font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px; color:#6c757d; margin-bottom:0.4rem; }
+    .score-value { font-size:2.4rem; font-weight:800; line-height:1; margin-bottom:0.2rem; }
+    .score-card.now    .score-value { color:#667eea; }
+    .score-card.future .score-value { color:#fd7e14; }
+    .score-sub { font-size:0.83rem; color:#495057; }
+    .score-level-pill { display:inline-block; padding:0.2rem 0.75rem; border-radius:20px; font-size:0.78rem; font-weight:700; margin-top:0.35rem; color:white; }
+    h2 { font-size:1.1rem; font-weight:700; color:#2c3e50; margin:2rem 0 0.9rem; padding-bottom:0.4rem; border-bottom:2px solid #667eea; }
+    .section-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:0.9rem; margin-bottom:1rem; }
+    .section-card { background:#f8f9fa; border-radius:10px; padding:1.1rem; border-left:4px solid #667eea; }
+    .section-card h4 { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.3px; color:#6c757d; margin-bottom:0.6rem; font-weight:700; }
+    .section-scores { display:flex; align-items:center; gap:0.9rem; }
+    .sec-score { display:flex; flex-direction:column; align-items:center; }
+    .sec-score .val { font-size:1.4rem; font-weight:800; line-height:1; }
+    .sec-score .lbl { font-size:0.65rem; text-transform:uppercase; color:#6c757d; margin-top:0.1rem; }
+    .sec-score.now .val    { color:#667eea; }
+    .sec-score.future .val { color:#fd7e14; }
+    .sec-divider { color:#dee2e6; font-size:1.4rem; }
+    .sec-level-col { margin-left:auto; text-align:right; }
+    .sec-level-col .lbl-title { font-size:0.65rem; color:#6c757d; text-transform:uppercase; }
+    .sec-level-col .now-lv { font-size:0.75rem; font-weight:700; color:#667eea; }
+    .sec-level-col .fut-lv { font-size:0.75rem; font-weight:700; color:#fd7e14; }
+    .table-wrapper { overflow-x:auto; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.07); }
+    table { width:100%; border-collapse:separate; border-spacing:0; background:white; font-size:0.82rem; }
+    thead { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:white; }
+    th { padding:0.75rem 0.9rem; text-align:left; font-weight:700; font-size:0.74rem; text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap; }
+    th:first-child { border-top-left-radius:10px; } th:last-child { border-top-right-radius:10px; }
+    td { padding:0.6rem 0.9rem; border-bottom:1px solid #e9ecef; vertical-align:middle; }
+    tr:last-child td { border-bottom:none; }
+    .section-header-row td { background:rgba(102,126,234,0.06); font-weight:700; color:#667eea; font-size:0.78rem; text-transform:uppercase; }
+    .total-row td { background:rgba(102,126,234,0.1); font-weight:800; font-size:0.87rem; border-top:2px solid #667eea; }
+    .raw-badge { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; font-size:0.76rem; font-weight:700; color:white; }
+    .raw-badge.l1{background:#dc3545}.raw-badge.l2{background:#fd7e14}.raw-badge.l3{background:#ffc107;color:#333}.raw-badge.l4{background:#90ee90;color:#333}.raw-badge.l5{background:#28a745}.raw-badge.none{background:#dee2e6;color:#6c757d}
+    .ws { font-weight:700; font-family:monospace; font-size:0.87rem; }
+    .ws.now{color:#667eea}.ws.future{color:#fd7e14}.ws.miss{color:#ced4da}
+    .print-header { display:none; }
+    @media print { body{background:white;padding:0} .page{box-shadow:none;border-radius:0;padding:1rem} }
+  </style>
+</head>
+<body>
+<div class="page">
+  <h1>PHOCUS Results</h1>
+  <p class="subtitle">Detailed breakdown — downloaded ${new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})}</p>
+
+  <div class="score-banner">
+    <div class="score-card now">
+      <h3>Now — Total Weighted Score</h3>
+      <div class="score-value">${nowTotal}</div>
+      <div class="score-sub">out of <strong>${maxScore}</strong> possible</div>
+      <div><span class="score-level-pill" style="background:#667eea">${nowPill}</span></div>
+    </div>
+    <div class="score-card future">
+      <h3>Future — Total Weighted Score</h3>
+      <div class="score-value">${futureTotal}</div>
+      <div class="score-sub">out of <strong>${maxScore}</strong> possible</div>
+      <div><span class="score-level-pill" style="background:#fd7e14">${futurePill}</span></div>
+    </div>
+  </div>
+
+  ${detailsHTML}
+</div>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'PHOCUS-Results-Detailed.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ─────────────────────────────────────────────
+// 6. RUN
+// ─────────────────────────────────────────────
+buildResults();
+</script>
+</body>
+</html>
