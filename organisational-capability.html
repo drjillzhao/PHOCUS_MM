@@ -85,6 +85,78 @@
       box-shadow: 0 6px 12px rgba(118, 75, 162, 0.4);
     }
 
+    /* Progress Bar */
+    .progress-wrap {
+      margin-bottom: 1.75rem;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.85rem;
+      color: #6c757d;
+      font-weight: 600;
+    }
+
+    .progress-meta strong { color: #667eea; }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #e9ecef;
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+      margin-top: 0.65rem;
+    }
+
+    .progress-step {
+      flex: 1;
+      text-align: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #adb5bd;
+      padding-top: 6px;
+      border-top: 3px solid #e9ecef;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .progress-step .step-label {
+      display: block;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+      margin-top: 2px;
+      font-size: 0.65rem;
+    }
+
+    .progress-step.done { color: #667eea; border-top-color: #667eea; }
+    .progress-step.current { color: #764ba2; border-top-color: #764ba2; }
+
+    @media (max-width: 700px) {
+      .progress-step .step-label { display: none; }
+    }
+
     /* Header Section */
     h1 {
       font-size: 2.5rem;
@@ -393,6 +465,18 @@
       <a href="process-maturity.html" class="nav-button primary">Next ></a>
     </div>
 
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span>Section <strong id="progress-section-num">3</strong> of 6</span>
+        <span><strong id="progress-count">0</strong> of <span id="progress-total">20</span> questions answered &middot; <span id="progress-percent">0%</span> complete</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-steps" id="progress-steps"></div>
+    </div>
+
     <!-- Header -->
     <h1>Organisational Capability</h1>
     <p class="section-intro">
@@ -625,6 +709,60 @@
       2: 'Effective Deliverer'
     };
 
+    const PAGE_QUESTION_COUNTS = { 1: 2, 2: 3, 3: 5, 4: 5, 5: 3, 6: 2 };
+    const PAGE_LABELS = {
+      1: 'Policy & Funding',
+      2: 'Overarching Strategies',
+      3: 'Org. Capability',
+      4: 'Process Maturity',
+      5: 'Supply Chain',
+      6: 'Integration'
+    };
+    const THIS_PAGE = 3;
+
+    function updateProgressBar() {
+      let totalQuestions = 0;
+      let answeredQuestions = 0;
+      let stepsHtml = '';
+
+      Object.keys(PAGE_QUESTION_COUNTS).forEach(function (pageStr) {
+        const page = parseInt(pageStr);
+        const qCount = PAGE_QUESTION_COUNTS[page];
+        let pageAnswered = 0;
+
+        for (let q = 1; q <= qCount; q++) {
+          totalQuestions++;
+          const v1 = localStorage.getItem('phocus_p' + page + '_q' + q + '_c1');
+          const v2 = localStorage.getItem('phocus_p' + page + '_q' + q + '_c2');
+          if (v1 && v2) {
+            answeredQuestions++;
+            pageAnswered++;
+          }
+        }
+
+        let cls = '';
+        if (page === THIS_PAGE) {
+          cls = 'current';
+        } else if (pageAnswered === qCount) {
+          cls = 'done';
+        }
+        stepsHtml += '<div class="progress-step ' + cls + '">' + page + '<span class="step-label">' + PAGE_LABELS[page] + '</span></div>';
+      });
+
+      const stepsEl = document.getElementById('progress-steps');
+      if (stepsEl) stepsEl.innerHTML = stepsHtml;
+
+      const percent = totalQuestions ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
+      const fillEl = document.getElementById('progress-fill');
+      const countEl = document.getElementById('progress-count');
+      const percentEl = document.getElementById('progress-percent');
+      const totalEl = document.getElementById('progress-total');
+      if (fillEl) fillEl.style.width = percent + '%';
+      if (countEl) countEl.textContent = answeredQuestions;
+      if (percentEl) percentEl.textContent = percent + '%';
+      if (totalEl) totalEl.textContent = totalQuestions;
+    }
+
     function updateIndicator(selectElement) {
       const container = selectElement.parentElement;
       const indicator = container.querySelector('.status-indicator');
@@ -669,6 +807,7 @@
     function saveToStorage(sel) {
       var key = 'phocus_p' + sel.dataset.page + '_q' + sel.dataset.q + '_c' + sel.dataset.col;
       localStorage.setItem(key, sel.value);
+      updateProgressBar();
     }
 
     window.addEventListener('DOMContentLoaded', function() {
@@ -682,6 +821,7 @@
       });
       updateColumnHeader(1);
       updateColumnHeader(2);
+      updateProgressBar();
     });
   </script>
 </body>
