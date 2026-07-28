@@ -113,58 +113,56 @@
       margin-bottom: 1.25rem;
     }
 
-    /* ── Overall Now vs Future score banner ── */
+    /* ── Overall Now vs Future score banner — matches Results.html exactly ── */
     .score-banner {
-      display: flex;
-      align-items: stretch;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 1rem;
       margin: 1.5rem 0;
     }
     .score-card {
-      flex: 1;
-      border-radius: 14px;
-      padding: 1.25rem 1.5rem;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-      transition: background 0.4s ease;
+      padding: 1.5rem 1.75rem;
+      border-radius: 12px;
+    }
+    .score-card.now {
+      background: linear-gradient(135deg, rgba(102,126,234,0.08) 0%, rgba(118,75,162,0.08) 100%);
+      border: 2px solid #667eea;
+    }
+    .score-card.future {
+      background: linear-gradient(135deg, rgba(253,126,20,0.08) 0%, rgba(230,100,0,0.08) 100%);
+      border: 2px solid #fd7e14;
     }
     .score-card h3 {
-      font-size: 0.72rem;
+      font-size: 0.78rem;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
-      opacity: 0.9;
-      margin-bottom: 0.4rem;
+      letter-spacing: 0.5px;
+      color: #6c757d;
+      margin-bottom: 0.5rem;
     }
-    .score-level {
-      font-size: 1.4rem;
+    .score-value {
+      font-size: 2.8rem;
       font-weight: 800;
-      line-height: 1.15;
+      line-height: 1;
+      margin-bottom: 0.25rem;
     }
-    .score-num {
-      font-size: 1.6rem;
-      font-weight: 800;
-      margin-top: 0.15rem;
-    }
+    .score-card.now  .score-value { color: #667eea; }
+    .score-card.future .score-value { color: #fd7e14; }
     .score-sub {
-      font-size: 0.75rem;
-      opacity: 0.85;
-      margin-top: 0.1rem;
+      font-size: 0.85rem;
+      color: #495057;
     }
-    .score-arrow {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      color: #764ba2;
-      font-weight: 800;
-      flex-shrink: 0;
+    .score-level-pill {
+      display: inline-block;
+      padding: 0.2rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 0.4rem;
+      color: white;
     }
     @media (max-width: 600px) {
-      .score-banner { flex-direction: column; }
-      .score-arrow { transform: rotate(90deg); }
+      .score-banner { grid-template-columns: 1fr; }
+      .score-value { font-size: 2.2rem; }
     }
 
     /* ── Summary banner ── */
@@ -400,20 +398,19 @@
 
   <div id="plan-content" style="display:none">
 
-    <!-- Overall Now vs Future score summary, shown out of 100 -->
+    <!-- Overall Now vs Future score summary — same weighted-score calculation and display as Results.html -->
     <div class="score-banner">
-      <div class="score-card" id="score-now-card">
-        <h3>Overall Score — Now</h3>
-        <div class="score-num" id="score-now-num">—</div>
-        <div class="score-level" id="score-now-label">—</div>
-        <div class="score-sub" id="score-now-sub">—</div>
+      <div class="score-card now">
+        <h3>Now — Total Weighted Score</h3>
+        <div class="score-value" id="now-total">—</div>
+        <div class="score-sub">out of <strong id="max-score">—</strong> possible</div>
+        <div><span class="score-level-pill" id="now-pill" style="background:#667eea">—</span></div>
       </div>
-      <div class="score-arrow">→</div>
-      <div class="score-card" id="score-future-card">
-        <h3>Overall Score — Future Target</h3>
-        <div class="score-num" id="score-future-num">—</div>
-        <div class="score-level" id="score-future-label">—</div>
-        <div class="score-sub" id="score-future-sub">—</div>
+      <div class="score-card future">
+        <h3>Future — Total Weighted Score</h3>
+        <div class="score-value" id="future-total">—</div>
+        <div class="score-sub">out of <strong id="max-score-2">—</strong> possible</div>
+        <div><span class="score-level-pill" id="future-pill" style="background:#fd7e14">—</span></div>
       </div>
     </div>
 
@@ -458,32 +455,38 @@
 
 <script>
 const QUESTIONS = [
-  { page:1, q:1, section:'Policy & Funding',          label:'Policy Framework',        sectionIcon:'🏛️' },
-  { page:1, q:2, section:'Policy & Funding',          label:'Funding',                 sectionIcon:'🏛️' },
-  { page:2, q:1, section:'Overarching Strategies',    label:'Delivery Strategy',       sectionIcon:'🗂️' },
-  { page:2, q:2, section:'Overarching Strategies',    label:'Quality Assurance',       sectionIcon:'🗂️' },
-  { page:2, q:3, section:'Overarching Strategies',    label:'Procurement Strategy',    sectionIcon:'🗂️' },
-  { page:3, q:1, section:'Organisational Capability', label:'Leadership & Governance', sectionIcon:'👥' },
-  { page:3, q:2, section:'Organisational Capability', label:'Training & Skills',       sectionIcon:'👥' },
-  { page:3, q:3, section:'Organisational Capability', label:'Culture',                 sectionIcon:'👥' },
-  { page:3, q:4, section:'Organisational Capability', label:'Cost-Benefit Analysis',   sectionIcon:'👥' },
-  { page:3, q:5, section:'Organisational Capability', label:'Stakeholder Engagement',  sectionIcon:'👥' },
-  { page:4, q:1, section:'Process Maturity',          label:'Process Documentation',   sectionIcon:'⚙️' },
-  { page:4, q:2, section:'Process Maturity',          label:'Project Management',      sectionIcon:'⚙️' },
-  { page:4, q:3, section:'Process Maturity',          label:'Risk Management',         sectionIcon:'⚙️' },
-  { page:4, q:4, section:'Process Maturity',          label:'Post-Occupancy',          sectionIcon:'⚙️' },
-  { page:4, q:5, section:'Process Maturity',          label:'Monitoring',              sectionIcon:'⚙️' },
-  { page:5, q:1, section:'Supply Chain Readiness',    label:'Supply Chain Engagement', sectionIcon:'🔗' },
-  { page:5, q:2, section:'Supply Chain Readiness',    label:'Supplier Capability',     sectionIcon:'🔗' },
-  { page:5, q:3, section:'Supply Chain Readiness',    label:'Supplier Innovation',     sectionIcon:'🔗' },
-  { page:6, q:1, section:'Integration & Scalability', label:'Procurement Alignment',   sectionIcon:'🚀' },
-  { page:6, q:2, section:'Integration & Scalability', label:'Scalability',             sectionIcon:'🚀' },
+  { page:1, q:1, section:'Policy & Funding',          label:'Policy Framework',        sectionIcon:'🏛️', weight:1.304 },
+  { page:1, q:2, section:'Policy & Funding',          label:'Funding',                 sectionIcon:'🏛️', weight:1.136 },
+  { page:2, q:1, section:'Overarching Strategies',    label:'Delivery Strategy',       sectionIcon:'🗂️', weight:1.03  },
+  { page:2, q:2, section:'Overarching Strategies',    label:'Quality Assurance',       sectionIcon:'🗂️', weight:0.8   },
+  { page:2, q:3, section:'Overarching Strategies',    label:'Procurement Strategy',    sectionIcon:'🗂️', weight:0.8   },
+  { page:3, q:1, section:'Organisational Capability', label:'Leadership & Governance', sectionIcon:'👥', weight:1.3   },
+  { page:3, q:2, section:'Organisational Capability', label:'Training & Skills',       sectionIcon:'👥', weight:1.14  },
+  { page:3, q:3, section:'Organisational Capability', label:'Culture',                 sectionIcon:'👥', weight:1.13  },
+  { page:3, q:4, section:'Organisational Capability', label:'Cost-Benefit Analysis',   sectionIcon:'👥', weight:1.0   },
+  { page:3, q:5, section:'Organisational Capability', label:'Stakeholder Engagement',  sectionIcon:'👥', weight:0.9   },
+  { page:4, q:1, section:'Process Maturity',          label:'Process Documentation',   sectionIcon:'⚙️', weight:1.16  },
+  { page:4, q:2, section:'Process Maturity',          label:'Project Management',      sectionIcon:'⚙️', weight:0.93  },
+  { page:4, q:3, section:'Process Maturity',          label:'Risk Management',         sectionIcon:'⚙️', weight:1.07  },
+  { page:4, q:4, section:'Process Maturity',          label:'Post-Occupancy',          sectionIcon:'⚙️', weight:1.03  },
+  { page:4, q:5, section:'Process Maturity',          label:'Monitoring',              sectionIcon:'⚙️', weight:1.13  },
+  { page:5, q:1, section:'Supply Chain Readiness',    label:'Supply Chain Engagement', sectionIcon:'🔗', weight:1.0   },
+  { page:5, q:2, section:'Supply Chain Readiness',    label:'Supplier Capability',     sectionIcon:'🔗', weight:0.91  },
+  { page:5, q:3, section:'Supply Chain Readiness',    label:'Supplier Innovation',     sectionIcon:'🔗', weight:0.43  },
+  { page:6, q:1, section:'Integration & Scalability', label:'Procurement Alignment',   sectionIcon:'🚀', weight:0.736 },
+  { page:6, q:2, section:'Integration & Scalability', label:'Scalability',             sectionIcon:'🚀', weight:1.056 },
 ];
 
 const LEVELS = ['Observer','Early Adopter','Effective Deliverer','Leader','Innovator'];
 
-// Colours matching the level legend used throughout the assessment (used for the overall score banner)
-const LEVEL_COLOURS = { 1:'#dc3545', 2:'#fd7e14', 3:'#e6ac00', 4:'#3aa33a', 5:'#1e7e34' };
+// Colours matching the level pill on the Results page exactly
+const LEVEL_COLORS_BY_NAME = { 'Observer':'#dc3545','Early Adopter':'#fd7e14','Effective Deliverer':'#ffc107','Leader':'#28a745','Innovator':'#155724' };
+
+function levelFromAvg(avg) {
+  if (avg === null || isNaN(avg)) return '—';
+  const idx = Math.min(4, Math.max(0, Math.round(avg) - 1));
+  return LEVELS[idx];
+}
 
 // Each of the 6 dimensions gets one consistent colour throughout the plan (header, progress bar, section title)
 const SECTION_COLOURS = {
@@ -664,7 +667,9 @@ function buildPlan() {
     totalAnswered++;
 
     const future = getFuture(q.page, q.q);
-    const target  = (future !== null && future > now) ? future : (now < 5 ? now + 1 : 5);
+    // Use whatever the person actually selected for Future, whenever they answered it.
+    // Only fall back to "next level up" if Future was left blank.
+    const target  = (future !== null) ? future : (now < 5 ? now + 1 : 5);
 
     sumNow += now;
     sumTarget += target;
@@ -692,26 +697,39 @@ function buildPlan() {
   document.getElementById('sum-gaps').textContent  = totalGaps;
   document.getElementById('sum-top').textContent   = totalTop;
 
-  // Overall Now vs Future score summary, expressed out of 100 (level 1 = 20 ... level 5 = 100)
-  const avgNow    = sumNow / totalAnswered;
-  const avgTarget = sumTarget / totalAnswered;
-  const scoreNow100    = Math.round(avgNow * 20);
-  const scoreTarget100 = Math.round(avgTarget * 20);
-  const roundedNow    = Math.min(5, Math.max(1, Math.round(avgNow)));
-  const roundedTarget = Math.min(5, Math.max(1, Math.round(avgTarget)));
+  // Overall Now vs Future score summary — identical weighted-score calculation to Results.html:
+  // every question contributes (raw level × weight), unanswered questions count as 0,
+  // and the total is shown against a fixed "out of 100" maximum (weights are designed to sum to 20).
+  const sumWeights = QUESTIONS.reduce(function(s, q) { return s + q.weight; }, 0);
+  const maxPossible = 100;
 
-  document.getElementById('score-now-num').textContent      = scoreNow100 + ' / 100';
-  document.getElementById('score-now-label').textContent    = LEVELS[roundedNow - 1];
-  document.getElementById('score-now-sub').textContent      = 'Average across ' + totalAnswered + ' areas assessed';
+  let nowWeightedTotal = 0, futureWeightedTotal = 0;
+  QUESTIONS.forEach(function(q) {
+    const n = getNow(q.page, q.q);
+    const f = getFuture(q.page, q.q);
+    nowWeightedTotal    += n !== null ? n * q.weight : 0;
+    futureWeightedTotal += f !== null ? f * q.weight : 0;
+  });
+  nowWeightedTotal    = parseFloat(nowWeightedTotal.toFixed(2));
+  futureWeightedTotal = parseFloat(futureWeightedTotal.toFixed(2));
 
-  document.getElementById('score-future-num').textContent   = scoreTarget100 + ' / 100';
-  document.getElementById('score-future-label').textContent = LEVELS[roundedTarget - 1];
-  document.getElementById('score-future-sub').textContent   = 'Average across ' + totalAnswered + ' areas assessed';
+  const nowAvg    = nowWeightedTotal    / sumWeights;
+  const futureAvg = futureWeightedTotal / sumWeights;
+  const nowLevel    = levelFromAvg(nowAvg);
+  const futureLevel = levelFromAvg(futureAvg);
 
-  document.getElementById('score-now-card').style.background =
-    'linear-gradient(135deg,' + LEVEL_COLOURS[roundedNow] + ',' + LEVEL_COLOURS[roundedNow] + 'cc)';
-  document.getElementById('score-future-card').style.background =
-    'linear-gradient(135deg,' + LEVEL_COLOURS[roundedTarget] + ',' + LEVEL_COLOURS[roundedTarget] + 'cc)';
+  document.getElementById('now-total').textContent    = nowWeightedTotal.toFixed(1);
+  document.getElementById('future-total').textContent = futureWeightedTotal.toFixed(1);
+  document.getElementById('max-score').textContent    = maxPossible;
+  document.getElementById('max-score-2').textContent  = maxPossible;
+
+  const nowPillEl = document.getElementById('now-pill');
+  nowPillEl.textContent = nowLevel + '  (avg ' + nowAvg.toFixed(2) + '/5)';
+  nowPillEl.style.background = LEVEL_COLORS_BY_NAME[nowLevel] || '#667eea';
+
+  const futurePillEl = document.getElementById('future-pill');
+  futurePillEl.textContent = futureLevel + '  (avg ' + futureAvg.toFixed(2) + '/5)';
+  futurePillEl.style.background = LEVEL_COLORS_BY_NAME[futureLevel] || '#fd7e14';
 
   const container = document.getElementById('plan-sections');
 
