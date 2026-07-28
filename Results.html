@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -457,40 +458,49 @@
       ⚠️ Some questions have not been answered yet. Unanswered questions score 0 in the chart and totals.
     </div>
 
-    <!-- Radar chart -->
-    <h2>🕸 Radar Chart</h2>
-    <div class="chart-legend">
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#667eea"></div>
-        <span>Now</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#fd7e14"></div>
-        <span>Future</span>
-      </div>
-      <span class="chart-note">Each axis shows the weighted average score (1–5) for that section.</span>
-    </div>
-    <div class="chart-wrapper">
-      <div class="chart-container">
-        <canvas id="radarChart"></canvas>
-      </div>
-    </div>
+    <!-- Radar chart + Overall scores side by side -->
+    <div style="display:flex;gap:2rem;align-items:flex-start;margin-bottom:0.5rem;flex-wrap:wrap">
 
-    <!-- Overall score cards -->
-    <h2>📊 Overall Scores</h2>
-    <div class="score-banner">
-      <div class="score-card now">
-        <h3>Now — Total Weighted Score</h3>
-        <div class="score-value" id="now-total">—</div>
-        <div class="score-sub">out of <strong id="max-score">—</strong> possible</div>
-        <div><span class="score-level-pill" id="now-pill" style="background:#667eea">—</span></div>
+      <!-- Left: Radar chart -->
+      <div style="flex:1 1 340px;min-width:280px">
+        <h2 style="margin-top:0">🕸 Radar Chart</h2>
+        <div class="chart-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#667eea"></div>
+            <span>Now</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#fd7e14"></div>
+            <span>Future</span>
+          </div>
+          <span class="chart-note">Each axis shows the weighted average score (1–5) for that section.</span>
+        </div>
+        <div class="chart-wrapper" style="padding:0">
+          <div class="chart-container">
+            <canvas id="radarChart"></canvas>
+          </div>
+        </div>
       </div>
-      <div class="score-card future">
-        <h3>Future — Total Weighted Score</h3>
-        <div class="score-value" id="future-total">—</div>
-        <div class="score-sub">out of <strong id="max-score-2">—</strong> possible</div>
-        <div><span class="score-level-pill" id="future-pill" style="background:#fd7e14">—</span></div>
+
+      <!-- Right: Overall score cards -->
+      <div style="flex:0 1 320px;min-width:260px">
+        <h2 style="margin-top:0">📊 Overall Scores</h2>
+        <div class="score-banner" style="grid-template-columns:1fr;gap:1rem">
+          <div class="score-card now">
+            <h3>Now — Total Weighted Score</h3>
+            <div class="score-value" id="now-total">—</div>
+            <div class="score-sub">out of <strong id="max-score">—</strong> possible</div>
+            <div><span class="score-level-pill" id="now-pill" style="background:#667eea">—</span></div>
+          </div>
+          <div class="score-card future">
+            <h3>Future — Total Weighted Score</h3>
+            <div class="score-value" id="future-total">—</div>
+            <div class="score-sub">out of <strong id="max-score-2">—</strong> possible</div>
+            <div><span class="score-level-pill" id="future-pill" style="background:#fd7e14">—</span></div>
+          </div>
+        </div>
       </div>
+
     </div>
 
     <!-- PDF download + Action Plan buttons -->
