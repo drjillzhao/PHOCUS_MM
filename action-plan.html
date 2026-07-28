@@ -82,6 +82,23 @@
     }
     .no-data a { color: #667eea; font-weight: 600; text-decoration: none; }
 
+    /* ── Validation CTA banner ── */
+    .validate-cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      background: linear-gradient(135deg, rgba(102,126,234,0.08), rgba(118,75,162,0.08));
+      border: 2px dashed #764ba2;
+      border-radius: 14px;
+      padding: 1.1rem 1.5rem;
+      margin-bottom: 1.75rem;
+    }
+    .validate-cta .cta-text h4 { font-size: 1rem; color: #2c3e50; margin-bottom: 0.2rem; }
+    .validate-cta .cta-text p { font-size: 0.85rem; color: #6c757d; margin: 0; }
+    .validate-cta .nav-button { white-space: nowrap; }
+
     /* ── Summary banner ── */
     .summary-banner {
       display: grid;
@@ -303,8 +320,9 @@
   <div class="nav-buttons no-print">
     <a href="Results.html" class="nav-button secondary">← Back to Results</a>
     <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
-       <a href="PHOCUS.html" class="nav-button primary">↻ Take the assessment again</a>
+       <a href="PHOCUS.html" class="nav-button secondary">↻ Take the assessment again</a>
       <button onclick="window.print()" class="nav-button print-btn">🖨 Print / Save PDF</button>
+      <a href="https://uwe.eu.qualtrics.com/jfe/form/SV_9ZDEsKhtrfuhVcy" class="nav-button primary">Help validate this tool →</a>
     </div>
   </div>
 
@@ -318,6 +336,14 @@
   </div>
 
   <div id="plan-content" style="display:none">
+    <div class="validate-cta no-print">
+      <div class="cta-text">
+        <h4>🔬 This tool is a prototype — help us test it</h4>
+        <p>Takes about 5 minutes: a few organisation details and a short usability questionnaire.</p>
+      </div>
+      <a href="https://uwe.eu.qualtrics.com/jfe/form/SV_9ZDEsKhtrfuhVcy" class="nav-button primary">Take part →</a>
+    </div>
+
     <div class="summary-banner">
       <div class="sum-card total">
         <h3>Areas Assessed</h3>
@@ -378,7 +404,7 @@ const ADVICE = {
   ],
   'Funding': [
     'Map existing and potential funding opportunities (e.g., grants, green finance, innovation funds). Build internal understanding of funder requirements and develop a preliminary case for why PH/ULE housing merits support. Identify potential partners or advisors experienced in alternative funding.',
-    'Develop a structured funding strategy and business model outlining short- and long-term investment needs. Prepare successful bids or partnerships to secure initial non-standard funding. Integrate lifecycle costing and value-based arguments (e.g., long-term savings, social and health co-benefits) into proposals.',D
+    'Develop a structured funding strategy and business model outlining short- and long-term investment needs. Prepare successful bids or partnerships to secure initial non-standard funding. Integrate lifecycle costing and value-based arguments (e.g., long-term savings, social and health co-benefits) into proposals.',
     'Establish ongoing relationships with diverse funders (public, private, philanthropic). Demonstrate successful delivery and return on investment from previous PH/ULE projects. Use data and case studies to strengthen the business case and attract repeat or larger-scale investment.',
     'Engage with funders and policymakers to shape future funding mechanisms and criteria for PH/ULE housing. Advocate for sector-wide reform by sharing evidence of performance, value, and impact. Co-develop or pilot new funding models (e.g., outcome-based finance, blended investment) that enable large-scale PH/ULE delivery.',
   ],
@@ -386,8 +412,7 @@ const ADVICE = {
     'Conduct a review of previous or ongoing PH/ULE projects (if any) to identify gaps and lessons learned. Define preliminary delivery objectives and assign internal responsibility for PH/ULE delivery planning. Begin developing a simple delivery roadmap or framework.',
     'Formalise the delivery strategy, outlining clear roles, responsibilities, and workflows across design, procurement, and construction. Integrate PH/ULE delivery steps into organisational procedures and establish repeatable processes. Pilot the strategy on one or more projects.',
     'Embed the delivery strategy across all housing programmes and ensure it is regularly reviewed and improved based on project feedback. Build partnerships with designers, contractors, and consultants to support consistent PH/ULE delivery. Introduce performance tracking and evaluation mechanisms.',
-    'Use delivery data and lessons learned to refine strategy and inform sector-wide best practice. Lead or contribute to industry networks to share insights and co-develop new approaches. Adapt strategy to emerging technologies, regulations, and funding models to stay at the forefront of PH/ULE delivery.
-',
+    'Use delivery data and lessons learned to refine strategy and inform sector-wide best practice. Lead or contribute to industry networks to share insights and co-develop new approaches. Adapt strategy to emerging technologies, regulations, and funding models to stay at the forefront of PH/ULE delivery.',
   ],
   'Quality Assurance': [
     'Review current QA practices and identify inconsistencies or gaps. Establish minimum internal QA standards for PH/ULE projects and assign responsibility for quality oversight. Begin documenting QA procedures and outcomes.',
@@ -402,13 +427,13 @@ const ADVICE = {
     'Innovate procurement models (e.g., outcome-based contracts, alliances, integrated delivery models) that incentivise PH/ULE excellence. Collaborate with other clients and funders to influence wider procurement standards, sharing best practice and driving sector transformation.',
   ],
   'Leadership & Governance': [
-    '"Brief leadership on PH/ULE benefits. Identify internal champions. Assign informal PH/ULE responsibilities. Connect with external networks',
+    'Brief leadership on PH/ULE benefits. Identify internal champions. Assign informal PH/ULE responsibilities. Connect with external networks',
     'Form a dedicated PH/ULE team. Define roles and responsibilities. Secure leadership endorsement and resources. Create a governance framework and roadmap for delivery.',
     'Expand the team with specialist skills. Embed governance in the organisational structure. Prioritise training and development. Set performance metrics and establish monitoring mechanisms.',
     'Integrate PH/ULE into corporate strategy. Influence external policy and join forums. Share best practice and innovation. Invest in R&D and continuous improvement.',
   ],
   'Training & Skills': [
-    '"Raise awareness of PH/ULE standards internally. Identify key staff for initial learning. Encourage informal knowledge sharing. Explore external resources for introductory training', 
+    'Raise awareness of PH/ULE standards internally. Identify key staff for initial learning. Encourage informal knowledge sharing. Explore external resources for introductory training', 
     'Develop structured training programmes aligned with PH/ULE delivery. Allocate budget and time for staff participation. Assess skills gaps regularly. Integrate training into workforce development plans.',
     'Expand training scope to advanced PH/ULE competencies. Invest in leadership development for PH/ULE delivery. Collaborate with external partners for tailored training. Embed a continuous learning culture across the organisation.',
     'Co-develop sector-leading training programmes with partners (e.g., PHT, AECB). Share expertise and resources across the sector. Position the organisation as a leader in PH/ULE skills development. Invest in innovation and R&D for future training needs.',
@@ -456,7 +481,7 @@ const ADVICE = {
     'Implement a fully integrated post-occupancy framework. Lead sector-wide best practice training for engagement and feedback systems. Use insights to influence future design and delivery standards. Collaborate with other providers to benchmark and optimise tenant experience.',
   ],
   'Monitoring': [
-    'Introduce basic monitoring tools for isolated PH/ULE projects. Collect limited performance data (e.g., energy use) informally. Begin awareness training on POE benefits. Explore external resources for monitoring best practices. A review of ‘performance gap’,
+    'Introduce basic monitoring tools for isolated PH/ULE projects. Collect limited performance data (e.g., energy use) informally. Begin awareness training on POE benefits. Explore external resources for monitoring best practices. A review of the ‘performance gap’.',
     'Implement structured POE and real-time monitoring systems across projects. Store collected data in a central repository. Train staff on data analysis for performance improvement and reducing the performance gap.',
     'Adopt centralised digital systems for monitoring and feedback. Develop pattern books based on performance data. Integrate insights into design and operational strategies. Formalise continuous improvement processes.',
     'Lead sector-wide innovation in data-driven POE. Implement real-time analytics and predictive feedback loops. Share data and insights to influence industry standards. Maintain a central digital database for sector benchmarking and learning.',
