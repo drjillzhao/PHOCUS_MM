@@ -93,11 +93,79 @@
       border: 2px dashed #764ba2;
       border-radius: 14px;
       padding: 1.1rem 1.5rem;
-      margin-bottom: 1.75rem;
+      margin-bottom: 1rem;
     }
     .validate-cta .cta-text h4 { font-size: 1rem; color: #2c3e50; margin-bottom: 0.2rem; }
     .validate-cta .cta-text p { font-size: 0.85rem; color: #6c757d; margin: 0; }
     .validate-cta .nav-button { white-space: nowrap; }
+
+    /* ── Bottom actions (retake / print / validate) ── */
+    .bottom-actions {
+      margin-top: 2.5rem;
+      padding-top: 1.75rem;
+      border-top: 2px solid #e9ecef;
+    }
+    .bottom-actions .action-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── Overall Now vs Future score banner ── */
+    .score-banner {
+      display: flex;
+      align-items: stretch;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .score-card {
+      flex: 1;
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      transition: background 0.4s ease;
+    }
+    .score-card h3 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      opacity: 0.9;
+      margin-bottom: 0.4rem;
+    }
+    .score-level {
+      font-size: 1.4rem;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+    .score-num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-top: 0.15rem;
+    }
+    .score-sub {
+      font-size: 0.75rem;
+      opacity: 0.85;
+      margin-top: 0.1rem;
+    }
+    .score-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      color: #764ba2;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    @media (max-width: 600px) {
+      .score-banner { flex-direction: column; }
+      .score-arrow { transform: rotate(90deg); }
+    }
 
     /* ── Summary banner ── */
     .summary-banner {
@@ -125,12 +193,18 @@
       color: #2c3e50;
       margin: 2rem 0 1rem;
       padding-bottom: 0.5rem;
-      border-bottom: 2px solid #667eea;
+      border-bottom: 3px solid #667eea;
       display: flex;
       align-items: center;
       gap: 0.6rem;
     }
     .section-title .section-icon { font-size: 1.1rem; }
+    .section-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
 
     /* ── Cards grid — 2 per row ── */
     .cards-grid {
@@ -180,11 +254,6 @@
       border: 2px solid rgba(255,255,255,0.4);
       flex-shrink: 0;
     }
-    .card-header.to-2 { background: linear-gradient(135deg,#3498db,#2980b9); }
-    .card-header.to-3 { background: linear-gradient(135deg,#27ae60,#219a52); }
-    .card-header.to-4 { background: linear-gradient(135deg,#e67e22,#d35400); }
-    .card-header.to-5 { background: linear-gradient(135deg,#8e44ad,#6c3483); }
-    .card-header.top  { background: linear-gradient(135deg,#155724,#0d3b17); }
 
     /* ── Progress bar ── */
     .progress-bar-wrap {
@@ -277,7 +346,6 @@
     /* ── Top card ── */
     .is-top-body {
       padding: 0.85rem 1.25rem 1.1rem;
-      background: linear-gradient(135deg,rgba(21,87,36,0.04),rgba(40,167,69,0.04));
       flex: 1;
     }
     .top-badge {
@@ -286,8 +354,6 @@
       gap: 0.4rem;
       font-size: 0.78rem;
       font-weight: 700;
-      color: #155724;
-      background: rgba(40,167,69,0.12);
       padding: 0.25rem 0.75rem;
       border-radius: 20px;
       margin-bottom: 0.5rem;
@@ -311,6 +377,8 @@
       .cards-grid { grid-template-columns: 1fr; }
       .summary-banner { grid-template-columns: 1fr; }
       .nav-buttons { flex-direction: column; }
+      .bottom-actions .action-row { flex-direction: column; }
+      .bottom-actions .action-row .nav-button { width: 100%; justify-content: center; }
     }
   </style>
 </head>
@@ -319,11 +387,6 @@
 
   <div class="nav-buttons no-print">
     <a href="Results.html" class="nav-button secondary">← Back to Results</a>
-    <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
-       <a href="PHOCUS.html" class="nav-button secondary">↻ Take the assessment again</a>
-      <button onclick="window.print()" class="nav-button print-btn">🖨 Print / Save PDF</button>
-      <a href="https://uwe.eu.qualtrics.com/jfe/form/SV_9ZDEsKhtrfuhVcy" class="nav-button primary">Help validate this tool →</a>
-    </div>
   </div>
 
   <h1>PHOCUS Action Plan</h1>
@@ -336,12 +399,22 @@
   </div>
 
   <div id="plan-content" style="display:none">
-    <div class="validate-cta no-print">
-      <div class="cta-text">
-        <h4>🔬 This tool is a prototype — help us test it</h4>
-        <p>Takes about 5 minutes: a few organisation details and a short usability questionnaire.</p>
+
+    <!-- Overall Now vs Future score summary, shown out of 100 -->
+    <div class="score-banner">
+      <div class="score-card" id="score-now-card">
+        <h3>Overall Score — Now</h3>
+        <div class="score-num" id="score-now-num">—</div>
+        <div class="score-level" id="score-now-label">—</div>
+        <div class="score-sub" id="score-now-sub">—</div>
       </div>
-      <a href="https://uwe.eu.qualtrics.com/jfe/form/SV_9ZDEsKhtrfuhVcy" class="nav-button primary">Take part →</a>
+      <div class="score-arrow">→</div>
+      <div class="score-card" id="score-future-card">
+        <h3>Overall Score — Future Target</h3>
+        <div class="score-num" id="score-future-num">—</div>
+        <div class="score-level" id="score-future-label">—</div>
+        <div class="score-sub" id="score-future-sub">—</div>
+      </div>
     </div>
 
     <div class="summary-banner">
@@ -363,6 +436,22 @@
     </div>
 
     <div id="plan-sections"></div>
+
+    <!-- Retake / Print / Validate — moved to the bottom of the page -->
+    <div class="bottom-actions no-print">
+      <div class="action-row">
+        <a href="PHOCUS.html" class="nav-button secondary">↻ Take the assessment again</a>
+        <button onclick="window.print()" class="nav-button print-btn">🖨 Print / Save PDF</button>
+      </div>
+      <div class="validate-cta">
+        <div class="cta-text">
+          <h4>🔬 This tool is a prototype — help us test it</h4>
+          <p>Takes about 5 minutes: a few organisation details and a short usability questionnaire.</p>
+        </div>
+        <a href="https://uwe.eu.qualtrics.com/jfe/form/SV_9ZDEsKhtrfuhVcy" target="_blank" rel="noopener noreferrer" class="nav-button primary">Take part →</a>
+      </div>
+    </div>
+
   </div>
 
 </main>
@@ -393,7 +482,18 @@ const QUESTIONS = [
 
 const LEVELS = ['Observer','Early Adopter','Effective Deliverer','Leader','Innovator'];
 
-const STEP_COLOURS = { 2:'#3498db', 3:'#27ae60', 4:'#e67e22', 5:'#8e44ad' };
+// Colours matching the level legend used throughout the assessment (used for the overall score banner)
+const LEVEL_COLOURS = { 1:'#dc3545', 2:'#fd7e14', 3:'#e6ac00', 4:'#3aa33a', 5:'#1e7e34' };
+
+// Each of the 6 dimensions gets one consistent colour throughout the plan (header, progress bar, section title)
+const SECTION_COLOURS = {
+  'Policy & Funding':          ['#4b6cb7', '#3a54a0'],
+  'Overarching Strategies':    ['#e67e22', '#c96a12'],
+  'Organisational Capability': ['#16a085', '#128a72'],
+  'Process Maturity':          ['#8e44ad', '#6c3483'],
+  'Supply Chain Readiness':    ['#c0392b', '#a5281b'],
+  'Integration & Scalability': ['#2c3e50', '#1b2836'],
+};
 
 const ADVICE = {
   'Policy Framework': [
@@ -555,6 +655,7 @@ function makeSlider(strip, dotsEl, prevBtn, nextBtn, counterEl, count) {
 // ─────────────────────────────────────────────
 function buildPlan() {
   let totalAnswered = 0, totalGaps = 0, totalTop = 0;
+  let sumNow = 0, sumTarget = 0;
   const bySection = {}, sectionIcons = {};
 
   QUESTIONS.forEach(function(q) {
@@ -564,6 +665,9 @@ function buildPlan() {
 
     const future = getFuture(q.page, q.q);
     const target  = (future !== null && future > now) ? future : (now < 5 ? now + 1 : 5);
+
+    sumNow += now;
+    sumTarget += target;
 
     const sec = q.section;
     if (!bySection[sec]) bySection[sec] = [];
@@ -588,15 +692,41 @@ function buildPlan() {
   document.getElementById('sum-gaps').textContent  = totalGaps;
   document.getElementById('sum-top').textContent   = totalTop;
 
+  // Overall Now vs Future score summary, expressed out of 100 (level 1 = 20 ... level 5 = 100)
+  const avgNow    = sumNow / totalAnswered;
+  const avgTarget = sumTarget / totalAnswered;
+  const scoreNow100    = Math.round(avgNow * 20);
+  const scoreTarget100 = Math.round(avgTarget * 20);
+  const roundedNow    = Math.min(5, Math.max(1, Math.round(avgNow)));
+  const roundedTarget = Math.min(5, Math.max(1, Math.round(avgTarget)));
+
+  document.getElementById('score-now-num').textContent      = scoreNow100 + ' / 100';
+  document.getElementById('score-now-label').textContent    = LEVELS[roundedNow - 1];
+  document.getElementById('score-now-sub').textContent      = 'Average across ' + totalAnswered + ' areas assessed';
+
+  document.getElementById('score-future-num').textContent   = scoreTarget100 + ' / 100';
+  document.getElementById('score-future-label').textContent = LEVELS[roundedTarget - 1];
+  document.getElementById('score-future-sub').textContent   = 'Average across ' + totalAnswered + ' areas assessed';
+
+  document.getElementById('score-now-card').style.background =
+    'linear-gradient(135deg,' + LEVEL_COLOURS[roundedNow] + ',' + LEVEL_COLOURS[roundedNow] + 'cc)';
+  document.getElementById('score-future-card').style.background =
+    'linear-gradient(135deg,' + LEVEL_COLOURS[roundedTarget] + ',' + LEVEL_COLOURS[roundedTarget] + 'cc)';
+
   const container = document.getElementById('plan-sections');
 
   Object.entries(bySection).forEach(function([section, items], si) {
+    const colours = SECTION_COLOURS[section] || ['#667eea', '#5a4fcf'];
+
     const block = document.createElement('div');
     block.className = 'section-block';
 
     const title = document.createElement('div');
     title.className = 'section-title';
-    title.innerHTML = '<span class="section-icon">' + sectionIcons[section] + '</span>' + section;
+    title.style.borderBottomColor = colours[0];
+    title.innerHTML =
+      '<span class="section-swatch" style="background:' + colours[0] + '"></span>' +
+      '<span class="section-icon">' + sectionIcons[section] + '</span>' + section;
     block.appendChild(title);
 
     const grid = document.createElement('div');
@@ -605,17 +735,16 @@ function buildPlan() {
     items.forEach(function(item, ci) {
       const nowLabel    = LEVELS[item.now - 1];
       const targetLabel = LEVELS[item.target - 1];
-      const hClass      = item.isTop ? 'top' : ('to-' + item.target);
-      const pColour     = item.isTop ? '#28a745' : (STEP_COLOURS[item.target] || '#667eea');
       const pPct        = Math.min(Math.round((item.now / item.target) * 100), 100);
 
       const card = document.createElement('div');
       card.className = 'flip-card-outer';
       card.style.animationDelay = ((si * 5 + ci) * 50) + 'ms';
 
-      // Header
+      // Header — coloured by dimension, consistent across the whole section
       const header = document.createElement('div');
-      header.className = 'card-header ' + hClass;
+      header.className = 'card-header';
+      header.style.background = 'linear-gradient(135deg,' + colours[0] + ',' + colours[1] + ')';
       header.innerHTML =
         '<div class="card-header-left">' +
           '<div class="card-q-label">' + item.q.label + '</div>' +
@@ -628,11 +757,11 @@ function buildPlan() {
         '<div class="level-badge">' + item.now + '</div>';
       card.appendChild(header);
 
-      // Progress bar
+      // Progress bar — same dimension colour
       const pbWrap = document.createElement('div');
       pbWrap.className = 'progress-bar-wrap';
       pbWrap.innerHTML =
-        '<div class="progress-track"><div class="progress-fill" style="width:' + pPct + '%;background:' + pColour + '"></div></div>' +
+        '<div class="progress-track"><div class="progress-fill" style="width:' + pPct + '%;background:' + colours[0] + '"></div></div>' +
         '<div class="progress-label">Level ' + item.now + ' / ' + item.target + '</div>';
       card.appendChild(pbWrap);
 
@@ -640,8 +769,9 @@ function buildPlan() {
         // Top / reached-target body
         const body = document.createElement('div');
         body.className = 'is-top-body';
+        body.style.background = 'linear-gradient(135deg,' + colours[0] + '14,' + colours[0] + '08)';
         body.innerHTML =
-          '<div class="top-badge">✓ ' + targetLabel + '</div>' +
+          '<div class="top-badge" style="color:' + colours[1] + ';background:' + colours[0] + '22">✓ ' + targetLabel + '</div>' +
           '<div class="card-advice">' +
             (item.now === 5
               ? 'You are already operating at the highest level for this area. Continue to lead the sector, share knowledge and influence national policy and practice.'
@@ -666,12 +796,11 @@ function buildPlan() {
           const toLevel    = fromLevel + 1;
           const fromLabel  = LEVELS[fromLevel - 1];
           const toLabel    = LEVELS[toLevel - 1];
-          const stepColour = STEP_COLOURS[toLevel] || '#667eea';
 
           const slide = document.createElement('div');
           slide.className = 'advice-slide';
           slide.innerHTML =
-            '<div class="step-label" style="color:' + stepColour + '">' +
+            '<div class="step-label" style="color:' + colours[0] + '">' +
               fromLabel + ' → ' + toLabel +
             '</div>' +
             '<div class="card-advice">' + stepText + '</div>';
