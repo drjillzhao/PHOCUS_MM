@@ -194,10 +194,15 @@
       padding: 1rem 0;
     }
 
+    /* FIX: give the container an explicit size so Chart.js's ResizeObserver has a stable
+       target to measure on first paint. Without a height here, the container's size depends
+       on the canvas and the canvas's size depends on the container -- that circular
+       dependency is what caused the visible "shrink" animation on load. */
     .chart-container {
       position: relative;
       width: 100%;
       max-width: 680px;
+      aspect-ratio: 1 / 1;
     }
 
     .chart-legend {
@@ -724,6 +729,9 @@ function buildResults() {
     },
     options: {
       responsive: true,
+      // FIX: paired with the fixed-size .chart-container (aspect-ratio: 1/1), this stops
+      // Chart.js from fighting the container for size on first paint.
+      maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
         tooltip: {
