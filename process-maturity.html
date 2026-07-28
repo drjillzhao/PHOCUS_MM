@@ -85,9 +85,11 @@
       box-shadow: 0 6px 12px rgba(118, 75, 162, 0.4);
     }
 
-    /* Progress Bar */
+    /* Progress Bar (now lives at the bottom of the page) */
     .progress-wrap {
-      margin-bottom: 1.75rem;
+      margin-top: 2.5rem;
+      padding-top: 1.75rem;
+      border-top: 2px solid #e9ecef;
     }
 
     .progress-meta {
@@ -96,46 +98,52 @@
       align-items: baseline;
       flex-wrap: wrap;
       gap: 0.5rem;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.75rem;
       font-size: 0.85rem;
-      color: #6c757d;
+      color: #495057;
       font-weight: 600;
     }
 
-    .progress-meta strong { color: #667eea; }
+    .progress-meta strong { color: #4c3aa8; }
 
+    /* Track: darker, with a visible inner border so the unfilled portion reads clearly as "not done" */
     .progress-track {
       width: 100%;
-      height: 10px;
-      background: #e9ecef;
+      height: 14px;
+      background: #d7dae1;
+      border: 1px solid #c3c8d1;
       border-radius: 999px;
       overflow: hidden;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
     }
 
+    /* Fill: solid, saturated colour + outer glow so completed portion pops against the track */
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #5b3fd9 0%, #7b2fb0 100%);
       border-radius: 999px;
       transition: width 0.4s ease;
+      box-shadow: 0 0 8px rgba(91, 63, 217, 0.55);
     }
 
     .progress-steps {
       display: flex;
       justify-content: space-between;
-      gap: 4px;
-      margin-top: 0.65rem;
+      gap: 8px;
+      margin-top: 1rem;
     }
 
     .progress-step {
       flex: 1;
       text-align: center;
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       font-weight: 700;
       color: #adb5bd;
-      padding-top: 6px;
-      border-top: 3px solid #e9ecef;
+      padding: 6px 4px;
+      border-radius: 8px;
+      background: #f1f2f5;
+      border: 1px solid #e3e5ea;
       transition: all 0.3s ease;
       text-transform: uppercase;
       letter-spacing: 0.3px;
@@ -147,11 +155,24 @@
       text-transform: none;
       letter-spacing: 0;
       margin-top: 2px;
-      font-size: 0.65rem;
+      font-size: 0.68rem;
     }
 
-    .progress-step.done { color: #667eea; border-top-color: #667eea; }
-    .progress-step.current { color: #764ba2; border-top-color: #764ba2; }
+    /* Done: filled solid colour block, white text -- unmistakably different from the pale "not started" state */
+    .progress-step.done {
+      color: #ffffff;
+      background: linear-gradient(135deg, #5b3fd9 0%, #7b2fb0 100%);
+      border-color: transparent;
+      box-shadow: 0 2px 6px rgba(91, 63, 217, 0.35);
+    }
+
+    /* Current: outlined and highlighted, distinct from both done and not-started */
+    .progress-step.current {
+      color: #4c3aa8;
+      background: #ffffff;
+      border: 2px solid #7b2fb0;
+      box-shadow: 0 0 0 3px rgba(123, 47, 176, 0.15);
+    }
 
     @media (max-width: 700px) {
       .progress-step .step-label { display: none; }
@@ -465,18 +486,6 @@
       <a href="supply-chain-readiness.html" class="nav-button primary">Next ></a>
     </div>
 
-    <!-- Progress -->
-    <div class="progress-wrap">
-      <div class="progress-meta">
-        <span>Section <strong id="progress-section-num">4</strong> of 6</span>
-        <span><strong id="progress-count">0</strong> of <span id="progress-total">20</span> questions answered &middot; <span id="progress-percent">0%</span> complete</span>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
-      <div class="progress-steps" id="progress-steps"></div>
-    </div>
-
     <!-- Header -->
     <h1>Process Maturity</h1>
     <p class="section-intro">
@@ -670,7 +679,7 @@
       </table>
     </div>
 
-    <!-- Legend at Bottom -->
+    <!-- Legend -->
     <div class="legend">
       <div class="legend-item">
         <div class="legend-circle red"></div>
@@ -692,6 +701,18 @@
         <div class="legend-circle dark-green"></div>
         <span>Innovator</span>
       </div>
+    </div>
+
+    <!-- Progress: now at the bottom of the page -->
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span>Section <strong id="progress-section-num">4</strong> of 6</span>
+        <span><strong id="progress-count">0</strong> of <span id="progress-total">20</span> questions answered &middot; <span id="progress-percent">0%</span> complete</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-steps" id="progress-steps"></div>
     </div>
   </main>
 
