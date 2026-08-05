@@ -93,13 +93,13 @@
       border: 2px dashed #764ba2;
       border-radius: 14px;
       padding: 1.1rem 1.5rem;
-      margin-bottom: 1rem;
+      margin: 1rem 0 1.5rem;
     }
     .validate-cta .cta-text h4 { font-size: 1rem; color: #2c3e50; margin-bottom: 0.2rem; }
     .validate-cta .cta-text p { font-size: 0.85rem; color: #6c757d; margin: 0; }
     .validate-cta .nav-button { white-space: nowrap; }
 
-    /* ── Bottom actions (retake / print / validate) ── */
+    /* ── Bottom actions (retake / print) ── */
     .bottom-actions {
       margin-top: 2.5rem;
       padding-top: 1.75rem;
@@ -390,6 +390,15 @@
   <h1>PHOCUS Action Plan</h1>
   <p class="page-subtitle">Your personalised next steps — based on your <em>Now</em> and <em>Future</em> scores</p>
 
+  <!-- Validation CTA banner — now at the top of the page -->
+  <div class="validate-cta no-print">
+    <div class="cta-text">
+      <h4>🔬 This tool is a prototype — help us test it</h4>
+      <p>Takes about 5 minutes: a few organisation details and a short usability questionnaire.</p>
+    </div>
+    <a href="https://uwe.eu.qualtrics.com/jfe/form/SV_9ZDEsKhtrfuhVcy" target="_blank" rel="noopener noreferrer" class="nav-button primary">Take part →</a>
+  </div>
+
   <div id="no-data" class="no-data" style="display:none">
     <p style="font-size:1.3rem;margin-bottom:0.5rem">📋 No assessment data found</p>
     <p>Please complete the assessment before viewing your action plan.</p>
@@ -434,18 +443,11 @@
 
     <div id="plan-sections"></div>
 
-    <!-- Retake / Print / Validate — moved to the bottom of the page -->
+    <!-- Retake / Print — validation CTA now shown at the top of the page -->
     <div class="bottom-actions no-print">
       <div class="action-row">
         <a href="PHOCUS.html" class="nav-button secondary">↻ Take the assessment again</a>
         <button onclick="window.print()" class="nav-button print-btn">🖨 Print / Save PDF</button>
-      </div>
-      <div class="validate-cta">
-        <div class="cta-text">
-          <h4>🔬 This tool is a prototype — help us test it</h4>
-          <p>Takes about 5 minutes: a few organisation details and a short usability questionnaire.</p>
-        </div>
-        <a href="https://uwe.eu.qualtrics.com/jfe/form/SV_9ZDEsKhtrfuhVcy" target="_blank" rel="noopener noreferrer" class="nav-button primary">Take part →</a>
       </div>
     </div>
 
