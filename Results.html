@@ -186,6 +186,61 @@
       color: white;
     }
 
+    /* ── Downloadable maturity badge ── */
+    .badge-section {
+      margin-top: 1.5rem;
+      text-align: center;
+      padding: 1.5rem 1.25rem;
+      background: #f8f9fa;
+      border-radius: 12px;
+    }
+    .badge-section h2 {
+      margin: 0 0 0.9rem;
+      font-size: 1.05rem;
+      border-bottom: none;
+      padding-bottom: 0;
+      justify-content: center;
+    }
+    .badge-preview {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0.9rem;
+    }
+    .badge-preview svg {
+      width: 190px;
+      height: auto;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.16));
+    }
+    .badge-org-input {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      margin-bottom: 0.75rem;
+      box-sizing: border-box;
+    }
+    .badge-org-input:focus {
+      outline: none;
+      border-color: #f39c12;
+    }
+    .badge-download-btn {
+      width: 100%;
+      justify-content: center;
+      background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+      color: white;
+    }
+    .badge-download-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 16px rgba(243,156,18,0.4);
+    }
+    .badge-hint {
+      font-size: 0.75rem;
+      color: #adb5bd;
+      margin-top: 0.6rem;
+    }
+
     /* ── Chart ── */
     .chart-wrapper {
       display: flex;
@@ -504,6 +559,15 @@
             <div><span class="score-level-pill" id="future-pill" style="background:#fd7e14">—</span></div>
           </div>
         </div>
+
+        <!-- Downloadable maturity badge -->
+        <div class="badge-section">
+          <h2>🎖 Your Maturity Badge</h2>
+          <div class="badge-preview" id="badge-preview"></div>
+          <input type="text" id="badge-org-input" class="badge-org-input" placeholder="Organisation name (optional)" maxlength="32">
+          <button onclick="downloadBadge()" class="nav-button badge-download-btn">⬇ Download Badge (PNG)</button>
+          <p class="badge-hint">A fun, shareable badge showing your current "Now" level. Nothing is uploaded — it's generated in your browser.</p>
+        </div>
       </div>
 
     </div>
@@ -519,7 +583,11 @@
       <a href="PHOCUS-Reference-Model.html" class="nav-button" style="background:linear-gradient(135deg,#2d6a4f 0%,#1b4332 100%);color:white;font-size:1rem;padding:0.9rem 2rem;text-decoration:none" target="_blank" rel="noopener noreferrer">
         📖 View Full Reference Model
       </a>
+      <a href="compare.html" class="nav-button" style="background:linear-gradient(135deg,#f39c12 0%,#d68910 100%);color:white;font-size:1rem;padding:0.9rem 2rem;text-decoration:none">
+        🏆 Compare With Other Organisations
+      </a>
     </div>
+    <p style="text-align:center;font-size:0.8rem;color:#adb5bd;margin-top:0.6rem">Comparing is optional — you choose whether to share your organisation name and score.</p>
 
     <!-- Section summaries + Detailed table — hidden in normal view, shown for print -->
     <div id="print-details" style="display:none">
@@ -584,6 +652,8 @@ const QUESTIONS = [
 
 const LEVEL_NAMES  = ['Observer','Early Adopter','Effective Deliverer','Leader','Innovator'];
 const LEVEL_COLORS = { 'Observer':'#dc3545','Early Adopter':'#fd7e14','Effective Deliverer':'#ffc107','Leader':'#28a745','Innovator':'#155724' };
+const LEVEL_COLORS_DARK = { 'Observer':'#a71d2a','Early Adopter':'#c2570a','Effective Deliverer':'#cc9a06','Leader':'#1e7e34','Innovator':'#0b2e13' };
+const LEVEL_ICONS = { 'Observer':'🔍','Early Adopter':'🌱','Effective Deliverer':'⚙️','Leader':'🏅','Innovator':'🚀' };
 
 const SECTION_COLORS = {
   'Policy & Funding':          '#e74c3c',
@@ -684,6 +754,12 @@ function buildResults() {
   const futurePill = document.getElementById('future-pill');
   futurePill.textContent = futureLevel + '  (avg ' + futureAvg.toFixed(2) + '/5)';
   futurePill.style.background = LEVEL_COLORS[futureLevel] || '#fd7e14';
+
+  // ── Maturity badge — uses the "Now" score/level ──
+  badgeLevel = nowLevel;
+  badgeScore = nowTotal;
+  badgeMax   = maxPossible;
+  renderBadgePreview();
 
   // ── Radar chart — 6 sections, weighted average per section (0–5 scale) ──
   const sectionNames = [];
@@ -878,6 +954,96 @@ function buildResults() {
 }
 
 // ─────────────────────────────────────────────
+// 3b. DOWNLOADABLE MATURITY BADGE
+// ─────────────────────────────────────────────
+let badgeLevel = null;
+let badgeScore = 0;
+let badgeMax   = 100;
+
+function escapeXml(str) {
+  return String(str).replace(/[&<>"']/g, function (c) {
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c];
+  });
+}
+
+function buildBadgeSVG() {
+  const level     = badgeLevel || 'Observer';
+  const color     = LEVEL_COLORS[level] || '#667eea';
+  const colorDark = LEVEL_COLORS_DARK[level] || '#4b5fc2';
+  const icon      = LEVEL_ICONS[level] || '🏛️';
+  const orgInput  = document.getElementById('badge-org-input');
+  const orgRaw    = orgInput ? orgInput.value.trim() : '';
+  const orgName   = orgRaw ? escapeXml(orgRaw.slice(0, 32)) : 'PHOCUS Assessment';
+  const dateText  = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const scoreText = (typeof badgeScore === 'number') ? badgeScore.toFixed(1) : '—';
+
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 460" width="400" height="460">' +
+    '<defs>' +
+      '<radialGradient id="badgeGlow" cx="50%" cy="38%" r="65%">' +
+        '<stop offset="0%" stop-color="' + color + '" stop-opacity="0.30"/>' +
+        '<stop offset="100%" stop-color="' + color + '" stop-opacity="0"/>' +
+      '</radialGradient>' +
+      '<linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+        '<stop offset="0%" stop-color="' + color + '"/>' +
+        '<stop offset="100%" stop-color="' + colorDark + '"/>' +
+      '</linearGradient>' +
+    '</defs>' +
+    '<rect width="400" height="460" fill="white"/>' +
+    '<circle cx="200" cy="185" r="178" fill="url(#badgeGlow)"/>' +
+    '<circle cx="200" cy="185" r="150" fill="white" stroke="url(#ringGrad)" stroke-width="12"/>' +
+    '<circle cx="200" cy="185" r="128" fill="none" stroke="' + color + '" stroke-width="1.5" stroke-dasharray="3 7" opacity="0.5"/>' +
+    '<text x="200" y="88" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="3" fill="#6c757d">PHOCUS MATURITY</text>' +
+    '<text x="200" y="178" text-anchor="middle" font-size="64">' + icon + '</text>' +
+    '<text x="200" y="232" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800" fill="#2c3e50">' + escapeXml(level) + '</text>' +
+    '<text x="200" y="258" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#6c757d">Score: ' + scoreText + ' / ' + badgeMax + '</text>' +
+    '<path d="M138 338 L138 432 L200 406 L262 432 L262 338 Z" fill="url(#ringGrad)"/>' +
+    '<text x="200" y="372" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="white">' + orgName + '</text>' +
+    '<text x="200" y="392" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="9.5" fill="rgba(255,255,255,0.85)">' + dateText + '</text>' +
+    '</svg>';
+}
+
+function renderBadgePreview() {
+  const container = document.getElementById('badge-preview');
+  if (!container || !badgeLevel) return;
+  container.innerHTML = buildBadgeSVG();
+}
+
+function downloadBadge() {
+  if (!badgeLevel) return; // no data yet, nothing to download
+  const svgString = buildBadgeSVG();
+  const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const img  = new Image();
+
+  img.onload = function () {
+    const scale  = 2; // higher-res download
+    const canvas = document.createElement('canvas');
+    canvas.width  = 400 * scale;
+    canvas.height = 460 * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale, scale);
+    ctx.drawImage(img, 0, 0, 400, 460);
+    URL.revokeObjectURL(url);
+
+    canvas.toBlob(function (pngBlob) {
+      const pngUrl = URL.createObjectURL(pngBlob);
+      const a = document.createElement('a');
+      a.href = pngUrl;
+      a.download = 'phocus-maturity-badge.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(pngUrl);
+    }, 'image/png');
+  };
+  img.onerror = function () {
+    URL.revokeObjectURL(url);
+    alert('Sorry, something went wrong generating the badge image. Please try again.');
+  };
+  img.src = url;
+}
+
+// ─────────────────────────────────────────────
 // 4. CLEAR DATA
 // ─────────────────────────────────────────────
 function clearAllData() {
@@ -998,6 +1164,9 @@ function downloadPDF() {
 // ─────────────────────────────────────────────
 // 6. RUN
 // ─────────────────────────────────────────────
+const badgeOrgInput = document.getElementById('badge-org-input');
+if (badgeOrgInput) badgeOrgInput.addEventListener('input', renderBadgePreview);
+
 buildResults();
 </script>
 </body>
