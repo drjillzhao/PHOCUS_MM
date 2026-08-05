@@ -155,10 +155,24 @@
         <a href="PHOCUS-Reference-Model.html" class="btn-reference">📖 View the full Reference Model</a>
 
         <div class="prototype-footer">
-            <strong>Note:</strong> This is a prototype for testing purposes. Your data will not be recorded.
+            <strong>Note:</strong> This is a prototype for testing purposes. Your assessment answers are never recorded or sent anywhere — only an anonymous page-visit count is logged.
         </div>
     </aside>
 </div>
+
+<script>
+  // ─────────────────────────────────────────────
+  // Anonymous usage tracking — view count
+  // Uses countapi.xyz, a free, no-signup hit-counter API.
+  // No personal data or assessment answers are ever sent — just a +1 to a named counter.
+  // Change PHOCUS_COUNTER_NAMESPACE if you want a fresh/private counter.
+  // ─────────────────────────────────────────────
+  (function () {
+    const PHOCUS_COUNTER_NAMESPACE = 'phocus-toolkit-uwe';
+    fetch('https://api.countapi.xyz/hit/' + PHOCUS_COUNTER_NAMESPACE + '/views')
+      .catch(function () { /* tracking is best-effort; never block the page on it */ });
+  })();
+</script>
 
 </body>
 </html>
