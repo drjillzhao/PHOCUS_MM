@@ -238,8 +238,9 @@
     <div id="confirmation" class="confirmation">
       <div class="check">✅</div>
       <h3>Your result has been shared</h3>
-      <p>You can update it any time by submitting again with the same organisation name.</p>
+      <p>An email with your organisation name and score should have just opened in your email app — hit <strong>Send</strong> to notify us. You can update your entry any time by submitting again with the same organisation name.</p>
       <a href="compare.html" class="nav-button" style="background:linear-gradient(135deg,#f39c12 0%,#d68910 100%);color:white;text-decoration:none">🏆 View the Comparison</a>
+      <p style="margin-top:0.9rem"><a id="resend-email-link" href="#" style="font-size:0.8rem;color:#667eea">Nothing opened? Click here to open the email manually</a></p>
     </div>
 
     <div id="form-block">
@@ -295,6 +296,7 @@
   const LEVEL_COLORS = { 'Observer':'#dc3545','Early Adopter':'#fd7e14','Effective Deliverer':'#ffc107','Leader':'#28a745','Innovator':'#155724' };
   const MAX_POSSIBLE = 100;
   const LEADERBOARD_KEY = 'phocus_leaderboard';
+  const NOTIFY_EMAIL = 'jill.zhao@uwe.ac.uk';
 
   function getNow(page, q) {
     const v = localStorage.getItem('phocus_p' + page + '_q' + q + '_c1');
@@ -389,8 +391,25 @@
     }
     saveLeaderboard(entries);
 
+    const mailtoUrl = buildMailtoUrl(entry);
+    document.getElementById('resend-email-link').href = mailtoUrl;
+    window.location.href = mailtoUrl;
+
     document.getElementById('form-block').style.display = 'none';
     document.getElementById('confirmation').style.display = 'block';
+  }
+
+  function buildMailtoUrl(entry) {
+    const dateDisplay = new Date(entry.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    const subject = 'PHOCUS Score Shared: ' + entry.orgName;
+    const body =
+      'Organisation: ' + entry.orgName + '\n' +
+      'Score: ' + entry.score.toFixed(1) + ' / ' + entry.maxScore + '\n' +
+      'Maturity Level: ' + entry.level + '\n' +
+      'Date: ' + dateDisplay;
+    return 'mailto:' + NOTIFY_EMAIL +
+      '?subject=' + encodeURIComponent(subject) +
+      '&body=' + encodeURIComponent(body);
   }
 
   function clearLeaderboard() {
