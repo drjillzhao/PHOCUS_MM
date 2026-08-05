@@ -78,7 +78,7 @@
       max-width: 640px;
     }
 
-    /* ── Coming soon banner ── */
+    /* ── Coming soon banner (empty state) ── */
     .coming-soon {
       text-align: center;
       background: linear-gradient(135deg, rgba(243,156,18,0.08) 0%, rgba(214,137,16,0.08) 100%);
@@ -87,7 +87,7 @@
       padding: 2.5rem 2rem;
       margin-bottom: 2rem;
     }
-    .coming-soon .badge {
+    .coming-soon .status-badge {
       display: inline-block;
       background: linear-gradient(135deg,#f39c12 0%,#d68910 100%);
       color: white;
@@ -108,6 +108,40 @@
       color: #6c757d;
       font-size: 0.95rem;
       max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ── Local preview banner (has data, but only from this browser) ── */
+    .local-preview {
+      text-align: center;
+      background: linear-gradient(135deg, rgba(102,126,234,0.08) 0%, rgba(118,75,162,0.08) 100%);
+      border: 2px solid #667eea;
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      display: none;
+    }
+    .local-preview .status-badge {
+      display: inline-block;
+      background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      color: white;
+      font-weight: 800;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 0.4rem 1.1rem;
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+    }
+    .local-preview h2 {
+      font-size: 1.2rem;
+      color: #2c3e50;
+      margin-bottom: 0.4rem;
+    }
+    .local-preview p {
+      color: #6c757d;
+      font-size: 0.9rem;
+      max-width: 620px;
       margin: 0 auto;
     }
 
@@ -147,7 +181,7 @@
       color: #6c757d;
     }
 
-    /* ── Preview table (skeleton / greyed out) ── */
+    /* ── Leaderboard / preview table ── */
     .preview-section h3 {
       font-size: 1.05rem;
       font-weight: 700;
@@ -191,6 +225,10 @@
       opacity: 0.55;
       filter: grayscale(0.3);
     }
+    table.is-live {
+      opacity: 1;
+      filter: none;
+    }
     thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
     th {
       padding: 0.8rem 1rem;
@@ -205,6 +243,10 @@
       border-bottom: 1px solid #e9ecef;
     }
     tr:last-child td { border-bottom: none; }
+    tr.own-row td {
+      background: rgba(102,126,234,0.07);
+      font-weight: 700;
+    }
     .rank-pill {
       display: inline-flex;
       align-items: center;
@@ -216,6 +258,17 @@
       color: #6c757d;
       font-weight: 700;
       font-size: 0.75rem;
+    }
+    .rank-pill.gold   { background: #ffd700; color: #7a5c00; }
+    .rank-pill.silver { background: #c8ccd1; color: #4a4a4a; }
+    .rank-pill.bronze { background: #cd7f32; color: white; }
+    .level-tag {
+      display: inline-block;
+      padding: 0.15rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: white;
     }
 
     /* ── Your score card ── */
@@ -256,9 +309,17 @@
       color: #adb5bd;
       margin-top: 0.75rem;
     }
+    .your-score .share-cta {
+      display: inline-flex;
+      margin-top: 0.9rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+    }
 
     @media (max-width: 700px) {
       .how-it-works { grid-template-columns: 1fr; }
+      table, thead, tbody, th, td, tr { font-size: 0.78rem; }
     }
     @media (max-width: 480px) {
       .nav-buttons { flex-direction: column; }
@@ -276,8 +337,8 @@
   <h1>Compare With Other Organisations</h1>
   <p class="page-subtitle">See how your organisation's PHOCUS maturity stacks up against others who've voluntarily shared their score.</p>
 
-  <div class="coming-soon">
-    <div class="badge">🚧 Coming Soon</div>
+  <div id="coming-soon" class="coming-soon">
+    <div class="status-badge">🚧 Coming Soon</div>
     <h2>No submissions yet — be the first!</h2>
     <p>
       We haven't started collecting scores for this comparison yet. Once organisations begin
@@ -286,7 +347,17 @@
     </p>
   </div>
 
-  <div class="how-it-works">
+  <div id="local-preview" class="local-preview">
+    <div class="status-badge">🧪 Local Preview</div>
+    <h2 id="local-preview-heading">1 organisation has shared a score</h2>
+    <p>
+      This is a working preview of the comparison feature. Right now, entries are stored only in
+      <em>this browser</em> — so you're only seeing scores shared from this device, not from other
+      visitors across the sector. A shared, cross-device version is coming later.
+    </p>
+  </div>
+
+  <div id="how-it-works" class="how-it-works">
     <div class="how-card">
       <div class="step-num">1</div>
       <h4>You opt in</h4>
@@ -295,20 +366,20 @@
     <div class="how-card">
       <div class="step-num">2</div>
       <h4>It's added here</h4>
-      <p>Your organisation name, score, and maturity level are added to this shared, public comparison table.</p>
+      <p>Your organisation name, score, and maturity level are added to this comparison table.</p>
     </div>
     <div class="how-card">
       <div class="step-num">3</div>
       <h4>See where you rank</h4>
-      <p>Everyone who has opted in can see how their score compares to other participating organisations.</p>
+      <p>See how your score compares to others who've shared theirs from this device.</p>
     </div>
   </div>
 
   <div class="preview-section">
-    <h3>📊 Preview — Organisation Rankings</h3>
-    <div class="preview-wrapper">
-      <div class="preview-overlay"><span>Coming soon</span></div>
-      <table>
+    <h3 id="leaderboard-heading">📊 Preview — Organisation Rankings</h3>
+    <div class="preview-wrapper" id="preview-wrapper">
+      <div class="preview-overlay" id="preview-overlay"><span>Coming soon</span></div>
+      <table id="leaderboard-table">
         <thead>
           <tr>
             <th>Rank</th>
@@ -317,7 +388,7 @@
             <th>Maturity Level</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="leaderboard-tbody">
           <tr>
             <td><span class="rank-pill">1</span></td>
             <td>—</td>
@@ -346,16 +417,13 @@
     <div class="val" id="your-score-val">—</div>
     <div class="sub">out of <strong id="your-score-max">100</strong> possible</div>
     <div><span class="pill" id="your-score-pill" style="background:#667eea">—</span></div>
-    <p class="note">This is what would be submitted for comparison once this feature is live. Nothing has been sent anywhere yet.</p>
+    <p class="note" id="your-score-note">This is what would be shared for comparison. Nothing has been sent anywhere yet.</p>
+    <div><a href="share-score.html" class="nav-button share-cta" id="share-cta">🔗 Share This Score</a></div>
   </div>
 
 </main>
 
 <script>
-  // ─────────────────────────────────────────────
-  // Read the person's own current score from localStorage (same source as Results.html)
-  // purely for preview purposes — nothing is submitted or sent anywhere on this page yet.
-  // ─────────────────────────────────────────────
   const QUESTIONS = [
     { page:1, q:1, weight:1.30 },
     { page:1, q:2, weight:1.14 },
@@ -381,6 +449,7 @@
 
   const LEVEL_NAMES  = ['Observer','Early Adopter','Effective Deliverer','Leader','Innovator'];
   const LEVEL_COLORS = { 'Observer':'#dc3545','Early Adopter':'#fd7e14','Effective Deliverer':'#ffc107','Leader':'#28a745','Innovator':'#155724' };
+  const LEADERBOARD_KEY = 'phocus_leaderboard';
 
   function getNow(page, q) {
     const v = localStorage.getItem('phocus_p' + page + '_q' + q + '_c1');
@@ -393,7 +462,64 @@
     return LEVEL_NAMES[idx];
   }
 
-  (function showYourScore() {
+  function getLeaderboard() {
+    try {
+      const raw = localStorage.getItem(LEADERBOARD_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function (c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c];
+    });
+  }
+
+  function rankClass(rank) {
+    if (rank === 1) return 'gold';
+    if (rank === 2) return 'silver';
+    if (rank === 3) return 'bronze';
+    return '';
+  }
+
+  function renderLeaderboard() {
+    const entries = getLeaderboard().slice().sort(function (a, b) { return b.score - a.score; });
+    const ownOrgName = (localStorage.getItem('phocus_org_name') || '').trim().toLowerCase();
+
+    if (entries.length === 0) return; // stays in the default "coming soon" empty state
+
+    document.getElementById('coming-soon').style.display = 'none';
+    document.getElementById('local-preview').style.display = 'block';
+    document.getElementById('how-it-works').style.display = 'none';
+    document.getElementById('preview-overlay').style.display = 'none';
+    document.getElementById('leaderboard-table').classList.add('is-live');
+    document.getElementById('leaderboard-heading').textContent = '📊 Organisation Rankings';
+    document.getElementById('local-preview-heading').textContent =
+      entries.length + (entries.length === 1 ? ' organisation has' : ' organisations have') + ' shared a score';
+
+    const tbody = document.getElementById('leaderboard-tbody');
+    tbody.innerHTML = '';
+
+    entries.forEach(function (entry, i) {
+      const rank = i + 1;
+      const isOwn = ownOrgName && entry.orgName && entry.orgName.trim().toLowerCase() === ownOrgName;
+      const levelColor = LEVEL_COLORS[entry.level] || '#667eea';
+
+      const row = document.createElement('tr');
+      if (isOwn) row.className = 'own-row';
+      row.innerHTML =
+        '<td><span class="rank-pill ' + rankClass(rank) + '">' + rank + '</span></td>' +
+        '<td>' + escapeHtml(entry.orgName) + (isOwn ? ' <span style="color:#667eea;font-size:0.75rem">(you)</span>' : '') + '</td>' +
+        '<td>' + Number(entry.score).toFixed(1) + ' / ' + (entry.maxScore || 100) + '</td>' +
+        '<td><span class="level-tag" style="background:' + levelColor + '">' + escapeHtml(entry.level || '—') + '</span></td>';
+      tbody.appendChild(row);
+    });
+  }
+
+  function showYourScore() {
     let hasData = false;
     let nowTotal = 0;
     QUESTIONS.forEach(function (q) {
@@ -414,7 +540,20 @@
     const pill = document.getElementById('your-score-pill');
     pill.textContent = level + '  (avg ' + nowAvg.toFixed(2) + '/5)';
     pill.style.background = LEVEL_COLORS[level] || '#667eea';
-  })();
+
+    const ownOrgName = (localStorage.getItem('phocus_org_name') || '').trim().toLowerCase();
+    const entries = getLeaderboard();
+    const alreadyShared = ownOrgName && entries.some(function (e) {
+      return e.orgName && e.orgName.trim().toLowerCase() === ownOrgName;
+    });
+    if (alreadyShared) {
+      document.getElementById('your-score-note').textContent = 'You\u2019ve already shared this score for comparison — submit again any time your score changes.';
+      document.getElementById('share-cta').textContent = '🔗 Update Shared Score';
+    }
+  }
+
+  renderLeaderboard();
+  showYourScore();
 </script>
 
 </body>
