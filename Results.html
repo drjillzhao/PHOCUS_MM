@@ -235,10 +235,31 @@
       transform: scale(1.02);
       box-shadow: 0 6px 16px rgba(243,156,18,0.4);
     }
+    .badge-share-btn {
+      width: 100%;
+      justify-content: center;
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+      text-decoration: none;
+      margin-top: 0.6rem;
+    }
+    .badge-share-btn:hover {
+      background: rgba(102,126,234,0.08);
+      transform: scale(1.02);
+    }
     .badge-hint {
       font-size: 0.75rem;
       color: #adb5bd;
       margin-top: 0.6rem;
+    }
+
+    /* ── Bottom actions ── */
+    .bottom-actions {
+      margin-top: 2.5rem;
+      padding-top: 1.75rem;
+      border-top: 2px solid #e9ecef;
+      text-align: center;
     }
 
     /* ── Chart ── */
@@ -460,6 +481,9 @@
       .chart-wrapper,
       .chart-legend,
       .incomplete-warning,
+      .badge-section,
+      .bottom-actions,
+      .no-print,
       button,
       h2:not(.print-show) {
         display: none !important;
@@ -497,7 +521,7 @@
   <!-- Nav -->
   <div class="nav-buttons">
     <a href="integration-scalability.html" class="nav-button secondary">← Back to Assessment</a>
-    <button onclick="clearAllData()" class="nav-button danger">🗑 Clear All Data</button>
+    <a href="PHOCUS.html" class="nav-button secondary">🏠 Home</a>
   </div>
 
   <h1>PHOCUS Results</h1>
@@ -566,6 +590,7 @@
           <div class="badge-preview" id="badge-preview"></div>
           <input type="text" id="badge-org-input" class="badge-org-input" placeholder="Organisation name (optional)" maxlength="32">
           <button onclick="downloadBadge()" class="nav-button badge-download-btn">⬇ Download Badge (PNG)</button>
+          <a href="share-score.html" class="nav-button badge-share-btn">🔗 Share Your Result</a>
           <p class="badge-hint">A fun, shareable badge showing your current "Now" level. Nothing is uploaded — it's generated in your browser.</p>
         </div>
       </div>
@@ -579,9 +604,6 @@
       </button>
       <a href="action-plan.html" class="nav-button" style="background:linear-gradient(135deg,#27ae60 0%,#1a7a44 100%);color:white;font-size:1rem;padding:0.9rem 2rem;text-decoration:none">
         📋 View My Action Plan
-      </a>
-      <a href="PHOCUS-Reference-Model.html" class="nav-button" style="background:linear-gradient(135deg,#2d6a4f 0%,#1b4332 100%);color:white;font-size:1rem;padding:0.9rem 2rem;text-decoration:none" target="_blank" rel="noopener noreferrer">
-        📖 View Full Reference Model
       </a>
       <a href="compare.html" class="nav-button" style="background:linear-gradient(135deg,#f39c12 0%,#d68910 100%);color:white;font-size:1rem;padding:0.9rem 2rem;text-decoration:none">
         🏆 Compare With Other Organisations
@@ -619,6 +641,11 @@
       </div>
 
     </div><!-- /print-details -->
+
+    <!-- Bottom actions -->
+    <div class="bottom-actions no-print">
+      <button onclick="clearAllData()" class="nav-button danger">🗑 Clear All Data</button>
+    </div>
 
   </div><!-- /results-content -->
 </main>
@@ -1165,7 +1192,16 @@ function downloadPDF() {
 // 6. RUN
 // ─────────────────────────────────────────────
 const badgeOrgInput = document.getElementById('badge-org-input');
-if (badgeOrgInput) badgeOrgInput.addEventListener('input', renderBadgePreview);
+if (badgeOrgInput) {
+  // Prefill from a prior visit / the Share page, if the person already entered a name
+  const savedOrgName = localStorage.getItem('phocus_org_name');
+  if (savedOrgName) badgeOrgInput.value = savedOrgName;
+
+  badgeOrgInput.addEventListener('input', function () {
+    renderBadgePreview();
+    localStorage.setItem('phocus_org_name', badgeOrgInput.value.trim());
+  });
+}
 
 buildResults();
 </script>
