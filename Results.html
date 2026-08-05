@@ -248,10 +248,43 @@
       background: rgba(102,126,234,0.08);
       transform: scale(1.02);
     }
+    .badge-compare-btn {
+      width: 100%;
+      justify-content: center;
+      background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+      color: white;
+      text-decoration: none;
+      margin-top: 0.6rem;
+    }
+    .badge-compare-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 16px rgba(243,156,18,0.4);
+    }
     .badge-hint {
       font-size: 0.75rem;
       color: #adb5bd;
       margin-top: 0.6rem;
+    }
+
+    /* ── Action Plan CTA — bigger and more obvious than the other buttons ── */
+    .action-plan-btn {
+      background: linear-gradient(135deg, #27ae60 0%, #1a7a44 100%);
+      color: white;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: 800;
+      padding: 1.15rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(39,174,96,0.45);
+      animation: actionPlanPulse 2.4s ease-in-out infinite;
+    }
+    .action-plan-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 10px 24px rgba(39,174,96,0.55);
+    }
+    @keyframes actionPlanPulse {
+      0%, 100% { box-shadow: 0 6px 18px rgba(39,174,96,0.45); }
+      50%      { box-shadow: 0 6px 26px rgba(39,174,96,0.75); }
     }
 
     /* ── Bottom actions ── */
@@ -591,25 +624,22 @@
           <input type="text" id="badge-org-input" class="badge-org-input" placeholder="Organisation name (optional)" maxlength="32">
           <button onclick="downloadBadge()" class="nav-button badge-download-btn">⬇ Download Badge (PNG)</button>
           <a href="share-score.html" class="nav-button badge-share-btn">🔗 Share Your Result</a>
-          <p class="badge-hint">A fun, shareable badge showing your current "Now" level. Nothing is uploaded — it's generated in your browser.</p>
+          <a href="compare.html" class="nav-button badge-compare-btn">🏆 Compare With Other Organisations</a>
+          <p class="badge-hint">A fun, shareable badge showing your current "Now" level. Nothing is uploaded — it's generated in your browser. Comparing is optional — you choose whether to share your organisation name and score.</p>
         </div>
       </div>
 
     </div>
 
-    <!-- PDF download + Action Plan + Reference Model buttons -->
+    <!-- PDF download + Action Plan buttons -->
     <div style="margin-top:2rem;text-align:center;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
       <button onclick="downloadPDF()" class="nav-button" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;font-size:1rem;padding:0.9rem 2rem">
         📥 Download Detailed Breakdown
       </button>
-      <a href="action-plan.html" class="nav-button" style="background:linear-gradient(135deg,#27ae60 0%,#1a7a44 100%);color:white;font-size:1rem;padding:0.9rem 2rem;text-decoration:none">
+      <a href="action-plan.html" class="nav-button action-plan-btn">
         📋 View My Action Plan
       </a>
-      <a href="compare.html" class="nav-button" style="background:linear-gradient(135deg,#f39c12 0%,#d68910 100%);color:white;font-size:1rem;padding:0.9rem 2rem;text-decoration:none">
-        🏆 Compare With Other Organisations
-      </a>
     </div>
-    <p style="text-align:center;font-size:0.8rem;color:#adb5bd;margin-top:0.6rem">Comparing is optional — you choose whether to share your organisation name and score.</p>
 
     <!-- Section summaries + Detailed table — hidden in normal view, shown for print -->
     <div id="print-details" style="display:none">
