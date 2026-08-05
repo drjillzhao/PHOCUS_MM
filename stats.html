@@ -126,17 +126,19 @@
   <p class="note">
     "Page Views" counts visits to the PHOCUS guide/landing page. "Completions" counts browsers that
     reached the Results page with at least one answer saved, counted once per browser. Both are anonymous
-    tallies from <a href="https://countapi.xyz" target="_blank" rel="noopener noreferrer">countapi.xyz</a>,
+    tallies from <a href="https://countapi.mileshilliard.com" target="_blank" rel="noopener noreferrer">countapi.mileshilliard.com</a>,
     a free, no-login counter service — treat exact numbers as indicative rather than authoritative,
-    since anyone who knows the counter names could technically increment them too.
+    since anyone who knows the counter keys could technically increment them too (and unlike the old
+    countapi.xyz, this one doesn't support namespaces, so the key names themselves are the only privacy).
   </p>
 </div>
 
 <script>
-  const PHOCUS_COUNTER_NAMESPACE = 'phocus-toolkit-uwe';
+  const PHOCUS_VIEWS_KEY = 'phocus-toolkit-uwe-views';
+  const PHOCUS_COMPLETIONS_KEY = 'phocus-toolkit-uwe-completions';
 
   async function getCount(key) {
-    const res = await fetch('https://api.countapi.xyz/get/' + PHOCUS_COUNTER_NAMESPACE + '/' + key);
+    const res = await fetch('https://countapi.mileshilliard.com/api/v1/get/' + key);
     if (!res.ok) throw new Error('Failed to fetch ' + key);
     const data = await res.json();
     return (data && typeof data.value === 'number') ? data.value : 0;
@@ -151,8 +153,8 @@
 
     try {
       const [views, completions] = await Promise.all([
-        getCount('views'),
-        getCount('completions'),
+        getCount(PHOCUS_VIEWS_KEY),
+        getCount(PHOCUS_COMPLETIONS_KEY),
       ]);
 
       document.getElementById('views-count').textContent = views;
