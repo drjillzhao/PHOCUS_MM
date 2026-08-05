@@ -579,7 +579,7 @@ const QUESTIONS = [
   { page:5, q:2, section:'Supply Chain Readiness',    label:'Supplier Training',       radarLabel:['Supplier','Training'],         weight:0.91  },
   { page:5, q:3, section:'Supply Chain Readiness',    label:'Joint Innovation',        radarLabel:['Joint','Innovation'],          weight:0.43  },
   { page:6, q:1, section:'Integration & Scalability', label:'Supply chain integration',radarLabel:['Supply chain','Integration'],  weight:0.74 },
-  { page:6, q:2, section:'Integration & Scalability', label:'Scalability',             radarLabel:['Scalability'],                 weight:1.06 },
+  { page:6, q:2, section:'Integration & Scalability', label:'Scalability',             radarLabel:['Scalability'],                 weight:1.07 },
 ];
 
 const LEVEL_NAMES  = ['Observer','Early Adopter','Effective Deliverer','Leader','Innovator'];
@@ -649,13 +649,14 @@ function buildResults() {
 
   // ── Anonymous usage tracking — completion count ──
   // Counts once per browser (guarded by a localStorage flag) the first time someone
-  // reaches this page with assessment data. Uses the same no-signup countapi.xyz
-  // counter as the view count on PHOCUS.html — no assessment answers are ever sent.
+  // reaches this page with assessment data. Uses countapi.mileshilliard.com, a free,
+  // no-signup counter service (the original countapi.xyz shut down in 2026).
+  // No assessment answers are ever sent — just a +1 to a named counter.
   (function trackCompletion() {
-    const PHOCUS_COUNTER_NAMESPACE = 'phocus-toolkit-uwe';
+    const PHOCUS_COMPLETIONS_KEY = 'phocus-toolkit-uwe-completions';
     const FLAG_KEY = 'phocus_completion_tracked';
     if (localStorage.getItem(FLAG_KEY)) return; // already counted this browser
-    fetch('https://api.countapi.xyz/hit/' + PHOCUS_COUNTER_NAMESPACE + '/completions')
+    fetch('https://countapi.mileshilliard.com/api/v1/hit/' + PHOCUS_COMPLETIONS_KEY)
       .then(function () { localStorage.setItem(FLAG_KEY, '1'); })
       .catch(function () { /* best-effort; don't set the flag if it failed, so it retries next visit */ });
   })();
