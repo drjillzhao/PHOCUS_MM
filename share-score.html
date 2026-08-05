@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHOCUS — Share Your Result</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #2c3e50;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 1.5rem 1rem;
+    }
+
+    .hero {
+      max-width: 640px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 2rem;
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      cursor: pointer;
+      border: none;
+    }
+    .nav-button.secondary {
+      background: #f8f9fa;
+      color: #495057;
+      border: 2px solid #dee2e6;
+    }
+    .nav-button.secondary:hover {
+      background: #e9ecef;
+      transform: translateX(-3px);
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+    .page-subtitle {
+      font-size: 0.95rem;
+      color: #6c757d;
+      margin-bottom: 1.5rem;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      background: #f8f9fa;
+      border-radius: 12px;
+      color: #6c757d;
+    }
+    .no-data a { color: #667eea; font-weight: 600; text-decoration: none; }
+
+    /* ── Score summary card ── */
+    .score-summary {
+      background: linear-gradient(135deg, rgba(102,126,234,0.08) 0%, rgba(118,75,162,0.08) 100%);
+      border: 2px solid #667eea;
+      border-radius: 14px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .score-summary h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #6c757d;
+      margin-bottom: 0.5rem;
+    }
+    .score-summary .val {
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: #667eea;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .score-summary .sub { font-size: 0.85rem; color: #495057; }
+    .score-summary .pill {
+      display: inline-block;
+      padding: 0.2rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 0.5rem;
+      color: white;
+    }
+
+    /* ── Form ── */
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 0.4rem;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      margin-bottom: 1rem;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .consent-note {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 8px;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.82rem;
+      color: #856404;
+      margin-bottom: 1.25rem;
+      line-height: 1.55;
+    }
+
+    .share-btn {
+      width: 100%;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-size: 1rem;
+      padding: 0.9rem;
+    }
+    .share-btn:hover {
+      transform: scale(1.01);
+      box-shadow: 0 6px 16px rgba(102,126,234,0.4);
+    }
+    .share-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      transform: none;
+    }
+
+    /* ── Confirmation state ── */
+    .confirmation {
+      display: none;
+      text-align: center;
+      padding: 2rem 1.5rem;
+      background: linear-gradient(135deg, rgba(40,167,69,0.08) 0%, rgba(21,87,36,0.08) 100%);
+      border: 2px solid #28a745;
+      border-radius: 14px;
+      margin-bottom: 1.5rem;
+    }
+    .confirmation .check { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .confirmation h3 { font-size: 1.15rem; color: #2c3e50; margin-bottom: 0.5rem; }
+    .confirmation p { font-size: 0.88rem; color: #6c757d; margin-bottom: 1.25rem; }
+
+    /* ── Footer utilities ── */
+    .footer-note {
+      font-size: 0.78rem;
+      color: #adb5bd;
+      text-align: center;
+      margin-top: 1.5rem;
+      line-height: 1.5;
+    }
+    .danger-link {
+      background: none;
+      border: none;
+      color: #dc3545;
+      font-size: 0.78rem;
+      text-decoration: underline;
+      cursor: pointer;
+      font-family: inherit;
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 480px) {
+      .nav-buttons { flex-direction: column; }
+      .nav-button { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+<main class="hero">
+
+  <div class="nav-buttons">
+    <a href="Results.html" class="nav-button secondary">← Back to Results</a>
+  </div>
+
+  <h1>Share Your Result</h1>
+  <p class="page-subtitle">Add your organisation name and current score so you can see how it compares to others.</p>
+
+  <div id="no-data" class="no-data" style="display:none">
+    <p style="font-size:1.2rem;margin-bottom:0.5rem">📋 No assessment data found</p>
+    <p>Complete the assessment first to share a score.</p>
+    <p style="margin-top:1rem"><a href="policy-and-funding-final.html">Start the assessment →</a></p>
+  </div>
+
+  <div id="share-content" style="display:none">
+
+    <div class="score-summary">
+      <h3>Your Current ("Now") Score</h3>
+      <div class="val" id="score-val">—</div>
+      <div class="sub">out of <strong id="score-max">100</strong> possible</div>
+      <div><span class="pill" id="score-pill" style="background:#667eea">—</span></div>
+    </div>
+
+    <div id="confirmation" class="confirmation">
+      <div class="check">✅</div>
+      <h3>Your result has been shared</h3>
+      <p>You can update it any time by submitting again with the same organisation name.</p>
+      <a href="compare.html" class="nav-button" style="background:linear-gradient(135deg,#f39c12 0%,#d68910 100%);color:white;text-decoration:none">🏆 View the Comparison</a>
+    </div>
+
+    <div id="form-block">
+      <label for="org-name-input">Organisation name</label>
+      <input type="text" id="org-name-input" maxlength="60" placeholder="e.g. Riverside Housing Association">
+
+      <div class="consent-note">
+        ⚠️ <strong>Currently a local prototype:</strong> your organisation name and score are stored
+        only in <em>this browser</em> (using local storage), so right now the comparison page will only
+        show entries shared from this device — not from other visitors. This is a stepping stone toward
+        a real shared comparison once a proper backend is in place. Don't share anything you wouldn't
+        want visible on this device.
+      </div>
+
+      <button id="share-submit-btn" class="nav-button share-btn" onclick="shareScore()">🔗 Share My Score</button>
+    </div>
+
+    <p class="footer-note">
+      Entries are matched by organisation name — sharing again with the same name updates your existing entry rather than adding a duplicate.
+      <br>
+      <button class="danger-link" onclick="clearLeaderboard()">Clear all locally stored comparison entries (this browser only)</button>
+    </p>
+
+  </div>
+
+</main>
+
+<script>
+  const QUESTIONS = [
+    { page:1, q:1, weight:1.30 },
+    { page:1, q:2, weight:1.14 },
+    { page:2, q:1, weight:1.03 },
+    { page:2, q:2, weight:0.8  },
+    { page:2, q:3, weight:0.8  },
+    { page:3, q:1, weight:1.3  },
+    { page:3, q:2, weight:1.14 },
+    { page:3, q:3, weight:1.13 },
+    { page:3, q:4, weight:1.0  },
+    { page:3, q:5, weight:0.9  },
+    { page:4, q:1, weight:1.16 },
+    { page:4, q:2, weight:0.93 },
+    { page:4, q:3, weight:1.07 },
+    { page:4, q:4, weight:1.03 },
+    { page:4, q:5, weight:1.13 },
+    { page:5, q:1, weight:1.0  },
+    { page:5, q:2, weight:0.91 },
+    { page:5, q:3, weight:0.43 },
+    { page:6, q:1, weight:0.74 },
+    { page:6, q:2, weight:1.07 },
+  ];
+
+  const LEVEL_NAMES  = ['Observer','Early Adopter','Effective Deliverer','Leader','Innovator'];
+  const LEVEL_COLORS = { 'Observer':'#dc3545','Early Adopter':'#fd7e14','Effective Deliverer':'#ffc107','Leader':'#28a745','Innovator':'#155724' };
+  const MAX_POSSIBLE = 100;
+  const LEADERBOARD_KEY = 'phocus_leaderboard';
+
+  function getNow(page, q) {
+    const v = localStorage.getItem('phocus_p' + page + '_q' + q + '_c1');
+    return (v !== null && v !== '') ? parseInt(v) : null;
+  }
+
+  function levelFromAvg(avg) {
+    if (avg === null || isNaN(avg)) return '—';
+    const idx = Math.min(4, Math.max(0, Math.round(avg) - 1));
+    return LEVEL_NAMES[idx];
+  }
+
+  let currentScore = 0;
+  let currentLevel = null;
+
+  function init() {
+    let hasData = false;
+    let nowTotal = 0;
+    QUESTIONS.forEach(function (q) {
+      const n = getNow(q.page, q.q);
+      if (n !== null) {
+        hasData = true;
+        nowTotal += n * q.weight;
+      }
+    });
+
+    if (!hasData) {
+      document.getElementById('no-data').style.display = 'block';
+      return;
+    }
+
+    const sumWeights = QUESTIONS.reduce(function (s, q) { return s + q.weight; }, 0);
+    const nowAvg = nowTotal / sumWeights;
+    currentLevel = levelFromAvg(nowAvg);
+    currentScore = parseFloat(nowTotal.toFixed(1));
+
+    document.getElementById('share-content').style.display = 'block';
+    document.getElementById('score-val').textContent = currentScore.toFixed(1);
+    document.getElementById('score-max').textContent = MAX_POSSIBLE;
+    const pill = document.getElementById('score-pill');
+    pill.textContent = currentLevel + '  (avg ' + nowAvg.toFixed(2) + '/5)';
+    pill.style.background = LEVEL_COLORS[currentLevel] || '#667eea';
+
+    // Prefill organisation name if it was entered before (e.g. on the badge, or a prior share)
+    const savedOrgName = localStorage.getItem('phocus_org_name');
+    if (savedOrgName) document.getElementById('org-name-input').value = savedOrgName;
+  }
+
+  function getLeaderboard() {
+    try {
+      const raw = localStorage.getItem(LEADERBOARD_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveLeaderboard(entries) {
+    localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(entries));
+  }
+
+  function shareScore() {
+    const input = document.getElementById('org-name-input');
+    const orgName = input.value.trim();
+
+    if (!orgName) {
+      input.focus();
+      input.style.borderColor = '#dc3545';
+      return;
+    }
+
+    localStorage.setItem('phocus_org_name', orgName);
+
+    const entries = getLeaderboard();
+    const matchIdx = entries.findIndex(function (e) {
+      return e.orgName && e.orgName.trim().toLowerCase() === orgName.toLowerCase();
+    });
+
+    const entry = {
+      orgName: orgName,
+      score: currentScore,
+      maxScore: MAX_POSSIBLE,
+      level: currentLevel,
+      date: new Date().toISOString(),
+    };
+
+    if (matchIdx > -1) {
+      entries[matchIdx] = entry;
+    } else {
+      entries.push(entry);
+    }
+    saveLeaderboard(entries);
+
+    document.getElementById('form-block').style.display = 'none';
+    document.getElementById('confirmation').style.display = 'block';
+  }
+
+  function clearLeaderboard() {
+    if (!confirm('Clear all locally stored comparison entries on this browser? This cannot be undone.')) return;
+    localStorage.removeItem(LEADERBOARD_KEY);
+    alert('Cleared. This only affected entries stored on this device.');
+  }
+
+  init();
+</script>
+
+</body>
+</html>
