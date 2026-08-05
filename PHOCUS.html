@@ -163,13 +163,14 @@
 <script>
   // ─────────────────────────────────────────────
   // Anonymous usage tracking — view count
-  // Uses countapi.xyz, a free, no-signup hit-counter API.
+  // Uses countapi.mileshilliard.com, a free, no-signup hit-counter API
+  // (the original countapi.xyz service shut down in 2026).
   // No personal data or assessment answers are ever sent — just a +1 to a named counter.
-  // Change PHOCUS_COUNTER_NAMESPACE if you want a fresh/private counter.
+  // Change PHOCUS_VIEWS_KEY if you want a fresh/private counter.
   // ─────────────────────────────────────────────
   (function () {
-    const PHOCUS_COUNTER_NAMESPACE = 'phocus-toolkit-uwe';
-    fetch('https://api.countapi.xyz/hit/' + PHOCUS_COUNTER_NAMESPACE + '/views')
+    const PHOCUS_VIEWS_KEY = 'phocus-toolkit-uwe-views';
+    fetch('https://countapi.mileshilliard.com/api/v1/hit/' + PHOCUS_VIEWS_KEY)
       .catch(function () { /* tracking is best-effort; never block the page on it */ });
   })();
 </script>
