@@ -508,13 +508,16 @@
 
     </div>
 
-    <!-- PDF download + Action Plan buttons -->
+    <!-- PDF download + Action Plan + Reference Model buttons -->
     <div style="margin-top:2rem;text-align:center;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
       <button onclick="downloadPDF()" class="nav-button" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;font-size:1rem;padding:0.9rem 2rem">
         📥 Download Detailed Breakdown
       </button>
       <a href="action-plan.html" class="nav-button" style="background:linear-gradient(135deg,#27ae60 0%,#1a7a44 100%);color:white;font-size:1rem;padding:0.9rem 2rem;text-decoration:none">
         📋 View My Action Plan
+      </a>
+      <a href="PHOCUS-Reference-Model.html" class="nav-button" style="background:linear-gradient(135deg,#2d6a4f 0%,#1b4332 100%);color:white;font-size:1rem;padding:0.9rem 2rem;text-decoration:none" target="_blank" rel="noopener noreferrer">
+        📖 View Full Reference Model
       </a>
     </div>
 
@@ -576,7 +579,7 @@ const QUESTIONS = [
   { page:5, q:2, section:'Supply Chain Readiness',    label:'Supplier Training',       radarLabel:['Supplier','Training'],         weight:0.91  },
   { page:5, q:3, section:'Supply Chain Readiness',    label:'Joint Innovation',        radarLabel:['Joint','Innovation'],          weight:0.43  },
   { page:6, q:1, section:'Integration & Scalability', label:'Supply chain integration',radarLabel:['Supply chain','Integration'],  weight:0.74 },
-  { page:6, q:2, section:'Integration & Scalability', label:'Scalability',             radarLabel:['Scalability'],                 weight:1.07 },
+  { page:6, q:2, section:'Integration & Scalability', label:'Scalability',             radarLabel:['Scalability'],                 weight:1.06 },
 ];
 
 const LEVEL_NAMES  = ['Observer','Early Adopter','Effective Deliverer','Leader','Innovator'];
@@ -643,6 +646,19 @@ function buildResults() {
   if (hasIncomplete) {
     document.getElementById('incomplete-warning').style.display = 'block';
   }
+
+  // ── Anonymous usage tracking — completion count ──
+  // Counts once per browser (guarded by a localStorage flag) the first time someone
+  // reaches this page with assessment data. Uses the same no-signup countapi.xyz
+  // counter as the view count on PHOCUS.html — no assessment answers are ever sent.
+  (function trackCompletion() {
+    const PHOCUS_COUNTER_NAMESPACE = 'phocus-toolkit-uwe';
+    const FLAG_KEY = 'phocus_completion_tracked';
+    if (localStorage.getItem(FLAG_KEY)) return; // already counted this browser
+    fetch('https://api.countapi.xyz/hit/' + PHOCUS_COUNTER_NAMESPACE + '/completions')
+      .then(function () { localStorage.setItem(FLAG_KEY, '1'); })
+      .catch(function () { /* best-effort; don't set the flag if it failed, so it retries next visit */ });
+  })();
 
   // ── Overall totals ──
   const sumWeights = QUESTIONS.reduce(function(s,q){ return s + q.weight; }, 0);
