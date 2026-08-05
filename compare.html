@@ -111,19 +111,19 @@
       margin: 0 auto;
     }
 
-    /* ── Local preview banner (has data, but only from this browser) ── */
-    .local-preview {
+    /* ── Live banner (has data) ── */
+    .live-banner {
       text-align: center;
-      background: linear-gradient(135deg, rgba(102,126,234,0.08) 0%, rgba(118,75,162,0.08) 100%);
-      border: 2px solid #667eea;
+      background: linear-gradient(135deg, rgba(40,167,69,0.08) 0%, rgba(21,87,36,0.08) 100%);
+      border: 2px solid #28a745;
       border-radius: 16px;
       padding: 1.5rem 2rem;
       margin-bottom: 2rem;
       display: none;
     }
-    .local-preview .status-badge {
+    .live-banner .status-badge {
       display: inline-block;
-      background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      background: linear-gradient(135deg,#28a745 0%,#1e7e34 100%);
       color: white;
       font-weight: 800;
       font-size: 0.8rem;
@@ -133,19 +133,19 @@
       border-radius: 20px;
       margin-bottom: 0.75rem;
     }
-    .local-preview h2 {
+    .live-banner h2 {
       font-size: 1.2rem;
       color: #2c3e50;
       margin-bottom: 0.4rem;
     }
-    .local-preview p {
+    .live-banner p {
       color: #6c757d;
       font-size: 0.9rem;
       max-width: 620px;
       margin: 0 auto;
     }
 
-    /* ── How it will work ── */
+    /* ── How it works ── */
     .how-it-works {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -243,10 +243,6 @@
       border-bottom: 1px solid #e9ecef;
     }
     tr:last-child td { border-bottom: none; }
-    tr.own-row td {
-      background: rgba(102,126,234,0.07);
-      font-weight: 700;
-    }
     .rank-pill {
       display: inline-flex;
       align-items: center;
@@ -269,52 +265,6 @@
       font-size: 0.72rem;
       font-weight: 700;
       color: white;
-    }
-
-    /* ── Your score card ── */
-    .your-score {
-      margin-top: 2rem;
-      padding: 1.5rem 1.75rem;
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(102,126,234,0.08) 0%, rgba(118,75,162,0.08) 100%);
-      border: 2px solid #667eea;
-      text-align: center;
-    }
-    .your-score h3 {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #6c757d;
-      margin-bottom: 0.5rem;
-    }
-    .your-score .val {
-      font-size: 2.4rem;
-      font-weight: 800;
-      color: #667eea;
-      line-height: 1;
-      margin-bottom: 0.25rem;
-    }
-    .your-score .sub { font-size: 0.85rem; color: #495057; }
-    .your-score .pill {
-      display: inline-block;
-      padding: 0.2rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      margin-top: 0.5rem;
-      color: white;
-    }
-    .your-score .note {
-      font-size: 0.78rem;
-      color: #adb5bd;
-      margin-top: 0.75rem;
-    }
-    .your-score .share-cta {
-      display: inline-flex;
-      margin-top: 0.9rem;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      text-decoration: none;
     }
 
     @media (max-width: 700px) {
@@ -341,37 +291,32 @@
     <div class="status-badge">🚧 Coming Soon</div>
     <h2>No submissions yet — be the first!</h2>
     <p>
-      We haven't started collecting scores for this comparison yet. Once organisations begin
-      opting in, this page will show organisation names, scores, maturity levels, and rankings
-      side by side. Check back soon, or share this page with others in the sector to help get it started.
+      We haven't added any scores to this comparison yet. Use the <strong>"Share Your Result"</strong>
+      button on your Results page to email us your organisation name and score, and we'll add it here.
     </p>
   </div>
 
-  <div id="local-preview" class="local-preview">
-    <div class="status-badge">🧪 Local Preview</div>
-    <h2 id="local-preview-heading">1 organisation has shared a score</h2>
-    <p>
-      This is a working preview of the comparison feature. Right now, entries are stored only in
-      <em>this browser</em> — so you're only seeing scores shared from this device, not from other
-      visitors across the sector. A shared, cross-device version is coming later.
-    </p>
+  <div id="live-banner" class="live-banner">
+    <div class="status-badge">✅ Live</div>
+    <h2 id="live-banner-heading">1 organisation has shared a score</h2>
+    <p>Scores below were submitted by organisations via email and added here by the PHOCUS team.</p>
   </div>
 
   <div id="how-it-works" class="how-it-works">
     <div class="how-card">
       <div class="step-num">1</div>
-      <h4>You opt in</h4>
-      <p>From your Results page, choose to share your organisation name and score. It's entirely voluntary.</p>
+      <h4>You share your score</h4>
+      <p>From your Results page, use "Share Your Result" to email us your organisation name and score. It's entirely voluntary.</p>
     </div>
     <div class="how-card">
       <div class="step-num">2</div>
-      <h4>It's added here</h4>
-      <p>Your organisation name, score, and maturity level are added to this comparison table.</p>
+      <h4>We add it here</h4>
+      <p>Once received, your organisation name, score, and maturity level are added to this comparison page.</p>
     </div>
     <div class="how-card">
       <div class="step-num">3</div>
       <h4>See where you rank</h4>
-      <p>See how your score compares to others who've shared theirs from this device.</p>
+      <p>Everyone can see how their score compares to other participating organisations.</p>
     </div>
   </div>
 
@@ -412,65 +357,31 @@
     </div>
   </div>
 
-  <div id="your-score" class="your-score" style="display:none">
-    <h3>Your Current Score</h3>
-    <div class="val" id="your-score-val">—</div>
-    <div class="sub">out of <strong id="your-score-max">100</strong> possible</div>
-    <div><span class="pill" id="your-score-pill" style="background:#667eea">—</span></div>
-    <p class="note" id="your-score-note">This is what would be shared for comparison. Nothing has been sent anywhere yet.</p>
-    <div><a href="share-score.html" class="nav-button share-cta" id="share-cta">🔗 Share This Score</a></div>
-  </div>
-
 </main>
 
 <script>
-  const QUESTIONS = [
-    { page:1, q:1, weight:1.30 },
-    { page:1, q:2, weight:1.14 },
-    { page:2, q:1, weight:1.03 },
-    { page:2, q:2, weight:0.8  },
-    { page:2, q:3, weight:0.8  },
-    { page:3, q:1, weight:1.3  },
-    { page:3, q:2, weight:1.14 },
-    { page:3, q:3, weight:1.13 },
-    { page:3, q:4, weight:1.0  },
-    { page:3, q:5, weight:0.9  },
-    { page:4, q:1, weight:1.16 },
-    { page:4, q:2, weight:0.93 },
-    { page:4, q:3, weight:1.07 },
-    { page:4, q:4, weight:1.03 },
-    { page:4, q:5, weight:1.13 },
-    { page:5, q:1, weight:1.0  },
-    { page:5, q:2, weight:0.91 },
-    { page:5, q:3, weight:0.43 },
-    { page:6, q:1, weight:0.74 },
-    { page:6, q:2, weight:1.07 },
+  // ─────────────────────────────────────────────
+  // MANUALLY-ENTERED SCORES
+  // ─────────────────────────────────────────────
+  // Add one entry per organisation that has emailed you their score (via the
+  // "Share Your Result" button on the Results page). No backend, no localStorage —
+  // just edit this array and re-upload the file.
+  //
+  // Fields:
+  //   orgName  — organisation name, exactly as you'd like it displayed
+  //   score    — the "Now" total weighted score from their email (a number, e.g. 62.3)
+  //   maxScore — always 100 unless the scoring system changes
+  //   level    — one of: 'Observer', 'Early Adopter', 'Effective Deliverer', 'Leader', 'Innovator'
+  //
+  // Example (delete the // to activate, or add your own rows below):
+  // { orgName: 'Riverside Housing Association', score: 62.3, maxScore: 100, level: 'Effective Deliverer' },
+
+  const SUBMITTED_SCORES = [
+    // ← add entries here, one per organisation, e.g.:
+    // { orgName: 'Example Housing Trust', score: 45.8, maxScore: 100, level: 'Early Adopter' },
   ];
 
-  const LEVEL_NAMES  = ['Observer','Early Adopter','Effective Deliverer','Leader','Innovator'];
   const LEVEL_COLORS = { 'Observer':'#dc3545','Early Adopter':'#fd7e14','Effective Deliverer':'#ffc107','Leader':'#28a745','Innovator':'#155724' };
-  const LEADERBOARD_KEY = 'phocus_leaderboard';
-
-  function getNow(page, q) {
-    const v = localStorage.getItem('phocus_p' + page + '_q' + q + '_c1');
-    return (v !== null && v !== '') ? parseInt(v) : null;
-  }
-
-  function levelFromAvg(avg) {
-    if (avg === null || isNaN(avg)) return '—';
-    const idx = Math.min(4, Math.max(0, Math.round(avg) - 1));
-    return LEVEL_NAMES[idx];
-  }
-
-  function getLeaderboard() {
-    try {
-      const raw = localStorage.getItem(LEADERBOARD_KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (e) {
-      return [];
-    }
-  }
 
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, function (c) {
@@ -486,18 +397,17 @@
   }
 
   function renderLeaderboard() {
-    const entries = getLeaderboard().slice().sort(function (a, b) { return b.score - a.score; });
-    const ownOrgName = (localStorage.getItem('phocus_org_name') || '').trim().toLowerCase();
+    if (!SUBMITTED_SCORES || SUBMITTED_SCORES.length === 0) return; // stays in the "coming soon" empty state
 
-    if (entries.length === 0) return; // stays in the default "coming soon" empty state
+    const entries = SUBMITTED_SCORES.slice().sort(function (a, b) { return b.score - a.score; });
 
     document.getElementById('coming-soon').style.display = 'none';
-    document.getElementById('local-preview').style.display = 'block';
+    document.getElementById('live-banner').style.display = 'block';
     document.getElementById('how-it-works').style.display = 'none';
     document.getElementById('preview-overlay').style.display = 'none';
     document.getElementById('leaderboard-table').classList.add('is-live');
     document.getElementById('leaderboard-heading').textContent = '📊 Organisation Rankings';
-    document.getElementById('local-preview-heading').textContent =
+    document.getElementById('live-banner-heading').textContent =
       entries.length + (entries.length === 1 ? ' organisation has' : ' organisations have') + ' shared a score';
 
     const tbody = document.getElementById('leaderboard-tbody');
@@ -505,55 +415,19 @@
 
     entries.forEach(function (entry, i) {
       const rank = i + 1;
-      const isOwn = ownOrgName && entry.orgName && entry.orgName.trim().toLowerCase() === ownOrgName;
       const levelColor = LEVEL_COLORS[entry.level] || '#667eea';
 
       const row = document.createElement('tr');
-      if (isOwn) row.className = 'own-row';
       row.innerHTML =
         '<td><span class="rank-pill ' + rankClass(rank) + '">' + rank + '</span></td>' +
-        '<td>' + escapeHtml(entry.orgName) + (isOwn ? ' <span style="color:#667eea;font-size:0.75rem">(you)</span>' : '') + '</td>' +
+        '<td>' + escapeHtml(entry.orgName) + '</td>' +
         '<td>' + Number(entry.score).toFixed(1) + ' / ' + (entry.maxScore || 100) + '</td>' +
         '<td><span class="level-tag" style="background:' + levelColor + '">' + escapeHtml(entry.level || '—') + '</span></td>';
       tbody.appendChild(row);
     });
   }
 
-  function showYourScore() {
-    let hasData = false;
-    let nowTotal = 0;
-    QUESTIONS.forEach(function (q) {
-      const n = getNow(q.page, q.q);
-      if (n !== null) {
-        hasData = true;
-        nowTotal += n * q.weight;
-      }
-    });
-    if (!hasData) return; // nothing answered yet — leave the card hidden
-
-    const sumWeights = QUESTIONS.reduce(function (s, q) { return s + q.weight; }, 0);
-    const nowAvg = nowTotal / sumWeights;
-    const level = levelFromAvg(nowAvg);
-
-    document.getElementById('your-score').style.display = 'block';
-    document.getElementById('your-score-val').textContent = nowTotal.toFixed(1);
-    const pill = document.getElementById('your-score-pill');
-    pill.textContent = level + '  (avg ' + nowAvg.toFixed(2) + '/5)';
-    pill.style.background = LEVEL_COLORS[level] || '#667eea';
-
-    const ownOrgName = (localStorage.getItem('phocus_org_name') || '').trim().toLowerCase();
-    const entries = getLeaderboard();
-    const alreadyShared = ownOrgName && entries.some(function (e) {
-      return e.orgName && e.orgName.trim().toLowerCase() === ownOrgName;
-    });
-    if (alreadyShared) {
-      document.getElementById('your-score-note').textContent = 'You\u2019ve already shared this score for comparison — submit again any time your score changes.';
-      document.getElementById('share-cta').textContent = '🔗 Update Shared Score';
-    }
-  }
-
   renderLeaderboard();
-  showYourScore();
 </script>
 
 </body>
