@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -235,19 +234,6 @@
       transform: scale(1.02);
       box-shadow: 0 6px 16px rgba(243,156,18,0.4);
     }
-    .badge-share-btn {
-      width: 100%;
-      justify-content: center;
-      background: white;
-      color: #667eea;
-      border: 2px solid #667eea;
-      text-decoration: none;
-      margin-top: 0.6rem;
-    }
-    .badge-share-btn:hover {
-      background: rgba(102,126,234,0.08);
-      transform: scale(1.02);
-    }
     .badge-hint {
       font-size: 0.75rem;
       color: #adb5bd;
@@ -256,18 +242,22 @@
 
     /* ── Action Plan CTA — bigger and more obvious than the other buttons ── */
     .action-plan-btn {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
       background: linear-gradient(135deg, #27ae60 0%, #1a7a44 100%);
       color: white;
       text-decoration: none;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 800;
-      padding: 1.15rem 3rem;
+      padding: 1.1rem 1.5rem;
       border-radius: 12px;
       box-shadow: 0 6px 18px rgba(39,174,96,0.45);
       animation: actionPlanPulse 2.4s ease-in-out infinite;
     }
     .action-plan-btn:hover {
-      transform: scale(1.04);
+      transform: scale(1.02);
       box-shadow: 0 10px 24px rgba(39,174,96,0.55);
     }
     @keyframes actionPlanPulse {
@@ -281,6 +271,17 @@
       padding-top: 1.75rem;
       border-top: 2px solid #e9ecef;
       text-align: center;
+    }
+
+    /* ── Download + Clear row, pinned to the bottom of the chart column ── */
+    .chart-actions-row {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 2px solid #e9ecef;
     }
 
     /* ── Chart ── */
@@ -298,7 +299,8 @@
     .chart-container {
       position: relative;
       width: 100%;
-      max-width: 680px;
+      max-width: 530px;
+      margin: 0 auto;
       aspect-ratio: 1 / 1;
     }
 
@@ -529,9 +531,13 @@
       th, td { padding: 0.6rem 0.75rem; font-size: 0.78rem; }
       .chart-note { display: none; }
     }
+    @media (max-width: 650px) {
+      .action-plan-btn { min-width: 0; width: 100%; box-sizing: border-box; }
+    }
     @media (max-width: 480px) {
       .nav-buttons { flex-direction: column; }
       .nav-button  { width: 100%; justify-content: center; }
+      .action-plan-btn { min-width: 0; width: 100%; box-sizing: border-box; }
       .section-grid { grid-template-columns: 1fr; }
     }
   </style>
@@ -564,44 +570,63 @@
     </div>
 
     <!-- Radar chart + Overall scores side by side -->
-    <div style="display:flex;gap:2rem;align-items:flex-start;margin-bottom:0.5rem;flex-wrap:wrap">
+    <div style="display:flex;gap:2rem;align-items:stretch;margin-bottom:0.5rem;flex-wrap:wrap">
 
-      <!-- Left: Radar chart -->
-      <div style="flex:1 1 340px;min-width:280px">
-        <h2 style="margin-top:0">🕸 Radar Chart</h2>
-        <div class="chart-legend">
-          <div class="legend-item">
-            <div class="legend-dot" style="background:#667eea"></div>
-            <span>Now</span>
+      <!-- Left: Radar chart, with Action Plan + Download/Clear pinned to the bottom -->
+      <div style="flex:1 1 340px;min-width:280px;display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <h2 style="margin-top:0">🕸 Radar Chart</h2>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#667eea"></div>
+              <span>Now</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#fd7e14"></div>
+              <span>Future</span>
+            </div>
+            <span class="chart-note">Each axis shows the weighted average score (1–5) for that section.</span>
           </div>
-          <div class="legend-item">
-            <div class="legend-dot" style="background:#fd7e14"></div>
-            <span>Future</span>
+          <div class="chart-wrapper" style="padding:0">
+            <div class="chart-container">
+              <canvas id="radarChart"></canvas>
+            </div>
           </div>
-          <span class="chart-note">Each axis shows the weighted average score (1–5) for that section.</span>
         </div>
-        <div class="chart-wrapper" style="padding:0">
-          <div class="chart-container">
-            <canvas id="radarChart"></canvas>
+
+        <div>
+          <!-- Action Plan CTA — primary action, above Download/Clear -->
+          <a href="action-plan.html" class="nav-button action-plan-btn">
+            📋 View My Action Plan
+          </a>
+
+          <!-- Download Detailed Breakdown + Clear All Data — bottom aligns with the badge card on the right -->
+          <div class="chart-actions-row no-print">
+            <button onclick="downloadPDF()" class="nav-button" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;font-size:1rem;padding:0.9rem 2rem">
+              📥 Download Detailed Breakdown
+            </button>
+            <button onclick="clearAllData()" class="nav-button danger">🗑 Clear All Data</button>
           </div>
         </div>
       </div>
 
       <!-- Right: Overall score cards -->
-      <div style="flex:0 1 320px;min-width:260px">
-        <h2 style="margin-top:0">📊 Overall Scores</h2>
-        <div class="score-banner" style="grid-template-columns:1fr;gap:1rem">
-          <div class="score-card now">
-            <h3>Now — Total Weighted Score</h3>
-            <div class="score-value" id="now-total">—</div>
-            <div class="score-sub">out of <strong id="max-score">—</strong> possible</div>
-            <div><span class="score-level-pill" id="now-pill" style="background:#667eea">—</span></div>
-          </div>
-          <div class="score-card future">
-            <h3>Future — Total Weighted Score</h3>
-            <div class="score-value" id="future-total">—</div>
-            <div class="score-sub">out of <strong id="max-score-2">—</strong> possible</div>
-            <div><span class="score-level-pill" id="future-pill" style="background:#fd7e14">—</span></div>
+      <div style="flex:0 1 320px;min-width:260px;display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <h2 style="margin-top:0">📊 Overall Scores</h2>
+          <div class="score-banner" style="grid-template-columns:1fr;gap:1rem">
+            <div class="score-card now">
+              <h3>Now — Total Weighted Score</h3>
+              <div class="score-value" id="now-total">—</div>
+              <div class="score-sub">out of <strong id="max-score">—</strong> possible</div>
+              <div><span class="score-level-pill" id="now-pill" style="background:#667eea">—</span></div>
+            </div>
+            <div class="score-card future">
+              <h3>Future — Total Weighted Score</h3>
+              <div class="score-value" id="future-total">—</div>
+              <div class="score-sub">out of <strong id="max-score-2">—</strong> possible</div>
+              <div><span class="score-level-pill" id="future-pill" style="background:#fd7e14">—</span></div>
+            </div>
           </div>
         </div>
 
@@ -611,21 +636,10 @@
           <div class="badge-preview" id="badge-preview"></div>
           <input type="text" id="badge-org-input" class="badge-org-input" placeholder="Organisation name (optional)" maxlength="32">
           <button onclick="downloadBadge()" class="nav-button badge-download-btn">⬇ Download Badge (PNG)</button>
-          <a href="share-score.html" class="nav-button badge-share-btn">🔗 Share Your Result</a>
           <p class="badge-hint">A fun, shareable badge showing your current "Now" level. Nothing is uploaded — it's generated in your browser.</p>
         </div>
       </div>
 
-    </div>
-
-    <!-- PDF download + Action Plan buttons -->
-    <div style="margin-top:2rem;text-align:center;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-      <button onclick="downloadPDF()" class="nav-button" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;font-size:1rem;padding:0.9rem 2rem">
-        📥 Download Detailed Breakdown
-      </button>
-      <a href="action-plan.html" class="nav-button action-plan-btn">
-        📋 View My Action Plan
-      </a>
     </div>
 
     <!-- Section summaries + Detailed table — hidden in normal view, shown for print -->
@@ -658,11 +672,6 @@
       </div>
 
     </div><!-- /print-details -->
-
-    <!-- Bottom actions -->
-    <div class="bottom-actions no-print">
-      <button onclick="clearAllData()" class="nav-button danger">🗑 Clear All Data</button>
-    </div>
 
   </div><!-- /results-content -->
 </main>
